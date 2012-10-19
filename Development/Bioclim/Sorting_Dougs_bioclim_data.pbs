@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -c s
+#PBS -j oe
+#PBS -m ae
+#PBS -N Sorting_Dougs_bioclim_data.r
+#PBS -M jc246980@jcu.edu.au
+#PBS -l walltime=9999:00:00
+#PBS -l nodes=1:ppn=4
+echo "------------------------------------------------------"
+echo " This job is allocated 1 cpu on "
+cat $PBS_NODEFILE
+echo "------------------------------------------------------"
+echo "PBS: Submitted to $PBS_QUEUE@$PBS_O_HOST"
+echo "PBS: Working directory is $PBS_O_WORKDIR"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+echo "------------------------------------------------------" 
+cd $PBS_O_WORKDIR
+
+#run the R script
+R CMD BATCH Sorting_Dougs_bioclim_data.r Sorting_Dougs_bioclim_data.output.txt
