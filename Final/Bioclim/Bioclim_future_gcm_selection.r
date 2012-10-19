@@ -102,7 +102,7 @@ doug.dir ="/home/jc246980/WaterHole_Persistence/Future_data/Future_data_Doug/"
 GCMoi=c("inm-cm30", "mri-cgcm232a", "csiro-mk30", "ncar-pcm1", "ccsr-miroc32med", "ipsl-cm4", "mpi-echam5", "cccma-cgcm31", "iap-fgoals10g")
 ESs = list.files(futdir, pattern="RCP") #list the emission scenarios
 YEAR=seq(2015, 2085, 10)
-vois = c('bioclim_02','bioclim_11','bioclim_12','bioclim_18')
+vois = c('bioclim_02','bioclim_11', 'bioclim_12', 'bioclim_18')
 
   for(es in ESs) { cat(es,'\n') #cycle through each emission & prepare all data for reuse
 
@@ -112,7 +112,8 @@ vois = c('bioclim_02','bioclim_11','bioclim_12','bioclim_18')
                           
             for(voi in vois) { cat(voi,'\n') 
                 tasc = read.asc.gz(paste(gisfuture.dir,es,"_",gcm,"_",year,"/",voi,".asc.gz",sep=''))
-                write.asc.gz(tasc,paste(doug.dir,es,"_",gcm,"_", year, "_",voi,".asc.gz",sep=''))
+                
+				write.asc.gz(tasc,paste(doug.dir,es,"_",gcm,"_", year, "_",voi,sep=''))
 
 
           
