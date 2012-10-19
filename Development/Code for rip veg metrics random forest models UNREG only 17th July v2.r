@@ -5,7 +5,7 @@
 library(randomForest)
 library(vegan)
 library(party)
-
+#this is a comment
 data.dir = "C:/Users/jc246980/Documents/NWC project/Riparian structure paper/"; setwd (data.dir)
 
 # Main data files
