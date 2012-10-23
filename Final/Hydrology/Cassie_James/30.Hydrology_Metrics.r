@@ -7,21 +7,21 @@ out.dir = "/home/jc246980/Hydrology.trials/Hydrology metrics/"
 
 #load necessary data
 
-load(paste(data.dir,'/Output_1976_2005/Q_run_30yearagg.Rdata',sep=''))
+load(paste(data.dir,'/Outputs/Output_1976_2005/Q_run_30yearagg_dynamic.Rdata',sep=''))
 
 ################################################################################
 #Calculate monthly means, standard deviations and coeff for current
 
 yois = 1976:2005#define the years of interest
-tt = expand.grid(sprintf('%02i',1:12),yois=yois);tt = paste(tt[,1],tt[,2],sep='_'); colnames(Q_run) = tt #add the column names
+tt = expand.grid(sprintf('%02i',1:12),yois=yois);tt = paste(tt[,1],tt[,2],sep='_'); colnames(Qrun) = tt #add the column names
 
 Q_run_curmetrics_mean=NULL
 Q_run_curmetrics_sd=NULL
 
     for (mm in 1:12) { cat(mm,'\n') #cycle through each of the months
 
-           tdata_curmean = rowMeans(Q_run[,which(as.numeric(substr(colnames(Q_run),1,2))==mm)],na.rm=TRUE) #calculate row mean
-           tdata_cursd = apply(Q_run[,which(as.numeric(substr(colnames(Q_run),1,2))==mm)],1,FUN=function(x) {sd(x,na.rm=TRUE)}) #calculate row standard deviation
+           tdata_curmean = rowMeans(Qrun[,which(as.numeric(substr(colnames(Qrun),1,2))==mm)],na.rm=TRUE) #calculate row mean
+           tdata_cursd = apply(Qrun[,which(as.numeric(substr(colnames(Qrun),1,2))==mm)],1,FUN=function(x) {sd(x,na.rm=TRUE)}) #calculate row standard deviation
            #tdata_covar =  100*(tdata_cursd/tdata_curmean)
            Q_run_curmetrics_mean=cbind(Q_run_curmetrics_mean,tdata_curmean)
            Q_run_curmetrics_sd=cbind(Q_run_curmetrics_sd,tdata_cursd)
@@ -36,7 +36,7 @@ tt = expand.grid(c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'
 
 co.var<-function(x)(100*sd(x)/mean(x))
 tempcv=tempsum=NULL
-hydrocur = as.matrix(Q_run)
+hydrocur = as.matrix(Qrun)
 cois = c(1)
 yy=1976:2005
     for (yy in 1976:2005) {  cat(yy,'\n')
@@ -77,7 +77,7 @@ colnames(Q_run_curmetrics_sd)[14]=  'Monthly_cv_sd'
 #Calculate mean monthly flow for 1, 2 and 3 lowest flow months
 
 
-hydrocur = as.matrix(Q_run)
+hydrocur = as.matrix(Qrun)
 cois = c(1,2)
 yy=1976:2005
 Lowmonth1yoi=Lowmonth2yoi=Lowmonth3yoi=tdatalow6yoi=NULL
@@ -159,7 +159,7 @@ colnames(Q_run_curmetrics_sd)[18]='Driest_6_month%_sd'
 ################################################################################
 #Calculate mean monthly flow for 1, 2 and 3 highest flow months
 
-hydrocur = as.matrix(Q_run)
+hydrocur = as.matrix(Qrun)
 cois = c(1,2)
 yy=1976:2005
 
@@ -223,7 +223,7 @@ colnames(Q_run_curmetrics_sd[,21])='highflow_3_month_sd'
 #average number of zero flow months
 
 zeroflow=NULL
-hydrocur = as.matrix(Q_run)
+hydrocur = as.matrix(Qrun)
 yy=1976:2005
 
     for (yy in 1976:2005) {  cat(yy,'\n')
@@ -293,14 +293,19 @@ extreme.clust = function(x,y,thresh.type){
 }
 
 
-hydrocur = as.matrix(Q_run)
+hydrocur = as.matrix(Qrun)
 num.month= matrix(NA,nrow=nrow(hydrocur),ncol=30)    
+colnames(num.month)=  1976:2005
 month.max.clust=total.severity=max.clust.length=clust.severity = num.month
+
 yois=1976:2005 
 
-	for (yy in 1:length(yois)) {  cat(yois[yy],'\n')
-		  tdata= t(apply(hydrocur[,grep(yois[yy],colnames(hydrocur))],1,myfun))
-		  num.month[,yy]=tdata[,1]; total.severity[,yy]=tdata[,2]; max.clust.length[,yy]=tdata[,3]; clust.severity[,yy]=tdata[,4]; month.max.clust[,yy]=tdata[,5]
+	for (yy in yois)) {  cat(yois[yy],'\n')
+		  yy=yois[1]
+		  cois=NULL
+		  cois = c(cois,grep(yy,colnames(hydrocur)))
+		  tdata= t(apply(hydrocur[,cois],1,myfun))
+		  num.month[,grep(yy,colnames(num.month))]=tdata[,1]; total.severity[,grep(yy,colnames(total.severity))]=tdata[,2]; max.clust.length[,grep(yy,colnames(max.clust.length))]=tdata[,3]; clust.severity[,grep(yy,colnames(clust.severity))]=tdata[,4]; month.max.clust[,grep(yy,colnames(month.max.clust))]=tdata[,5]
 	}
 
 num.month.mean = rowMeans(num.month, na.rm = TRUE); Q_run_curmetrics_mean=cbind(Q_run_curmetrics_mean, num.month.mean)
@@ -319,18 +324,18 @@ month.max.clust.mean = rowMeans(month.max.clust, na.rm = TRUE); Q_run_curmetrics
 month.max.clust.sd = apply(month.max.clust,1,sd); Q_run_curmetrics_sdt=cbind(Q_run_curmetrics_sd, month.max.clust.sd)
 
 
-colnames(Q_run_curmetrics_mean[,23])='num.month.mean'
-colnames(Q_run_curmetrics_mean[,24])='total.severity.mean'
-colnames(Q_run_curmetrics_mean[,25])='max.clust.length.mean'
-colnames(Q_run_curmetrics_mean[,26])='clust.severity.mean'
-colnames(Q_run_curmetrics_mean[,27])='month.max.clust.mean'
+colnames(Q_run_curmetrics_mean[,24])='num.month.mean'
+colnames(Q_run_curmetrics_mean[,25])='total.severity.mean'
+colnames(Q_run_curmetrics_mean[,26])='max.clust.length.mean'
+colnames(Q_run_curmetrics_mean[,27])='clust.severity.mean'
+colnames(Q_run_curmetrics_mean[,28])='month.max.clust.mean'
 
 
-colnames(Q_run_curmetrics_sd[,22])='num.month.sd'
-colnames(Q_run_curmetrics_sd[,23])='total.severity.sd'
-colnames(Q_run_curmetrics_sd[,24])='max.clust.length.sd'
-colnames(Q_run_curmetrics_sd[,25])='clust.severity.sd'
-colnames(Q_run_curmetrics_sd[,26])='month.max.clust.sd'
+colnames(Q_run_curmetrics_sd[,23])='num.month.sd'
+colnames(Q_run_curmetrics_sd[,24])='total.severity.sd'
+colnames(Q_run_curmetrics_sd[,25])='max.clust.length.sd'
+colnames(Q_run_curmetrics_sd[,26])='clust.severity.sd'
+colnames(Q_run_curmetrics_sd[,27])='month.max.clust.sd'
 
 ################################################################################
 
