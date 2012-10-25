@@ -1,0 +1,72 @@
+####################################################################################
+# Code to create table for accumulate variables
+
+#qsub -l nodes=2 -l pmem=5gb -I
+
+# load R
+
+library(SDMTools); library(maptools)
+
+# Create runoff table
+
+wd = "/home/jc246980/Hydrology.trials/"; setwd(wd)   
+load(paste(wd,'Reach_runoff_5km.Rdata',sep=''))    
+colnames(Reach_runoff)=c('SEGMENTNO', 'Annual_runoff')
+
+# Import useful attributes from Janet
+                  
+streamatts = read.dbf('/home/jc246980/Janet_Stein_data/streamattributes.dbf')
+Annualmean = streamatts[,2:3]
+
+networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
+From_node = networkatts[,c(2,11)]
+
+vegetationatts=read.dbf('/home/jc246980/Janet_Stein_data/reducedVegMVSGAttributes.dbf')
+cleared_veg = vegetationatts[,c('SEGMENTNO','STRMVSG98_')] 
+
+landuseatts=read.dbf('/home/jc246980/Janet_Stein_data/LanduseAttributes.dbf')
+urban=landuseatts[,c('SEGMENTNO', 'STR_URBAN')]
+
+Terrainatts=read.dbf('/home/jc246980/Janet_Stein_data/Terrain.dbf')
+Terrain_subarea=Terrainatts[,c(2,10)]
+
+# Bring in areas for catchments as determined by us (these are highly correlated with Janets SUBAREAs in the terrain attribute table)
+
+load('/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_UID_5km.Rdata')    
+Segment_areas_ours = aggregate(Area_agg$AREA, by = list(Area_agg$SegmentNo), sum) 
+colnames(Segment_areas_ours)=c('SEGMENTNO', 'AREA_ours') 
+Segment_areas_ours$AREA=Segment_areas_ours$AREA_ours/1000000
+Segment_areas_ours=Segment_areas_ours[,c(1,3)]
+
+
+# Merge various tables together
+
+tdata=merge(Reach_runoff,urban, by='SEGMENTNO')
+tdata=merge(tdata,cleared_veg, by='SEGMENTNO')
+tdata=merge(tdata,Segment_areas_ours, by='SEGMENTNO')
+
+tdata$Cleared_veg_km = tdata$AREA*(tdata$STRMVSG98_/100) 
+tdata$Urban_km = tdata$AREA*(tdata$STR_URBAN/100) 
+
+Info.table=tdata[,c(1,2,5,6,7)]
+
+save(Info.table,file=paste(wd,'Stream.accumulation.metrics.Rdata',sep=''))    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
