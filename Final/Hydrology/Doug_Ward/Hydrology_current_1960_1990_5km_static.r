@@ -1,3 +1,4 @@
+
 #drafted by Jeremy VanDerWal ( jjvanderwal@gmail.com ... www.jjvanderwal.com )
 #GNU General Public License .. feel free to use / distribute ... no warranties
 ####################################################################################
@@ -11,16 +12,17 @@
 #START R
 ####################################################################################
 
-library(SDMTools) #load the necessary library
-dyn.load('/home/jc246980/Freshwater_scripts/Final/Hydrology/Doug_Ward/05.Budyko.so') #load the C code
 
-##### run Budyko code simply providing matrix 12xn where columns represent 12 months --
+##### run Budyko code simply providing matrix 12xn where columns represent 12 months -- static analysis
 base.asc='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/base.asc.gz'
 pos='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/base.positions.csv'
-tmin='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/monthly.csv/tmin19402009.csv'
-tmax='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/monthly.csv/tmax19402009.csv'
-pr='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/monthly.csv/rain19402009.csv'
+tmin='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/baseline.61to90/monthly.tmin.csv'
+tmax='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/baseline.61to90/monthly.tmax.csv'
+pr='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/baseline.61to90/monthly.pr.csv'
 outname='current'
+
+library(SDMTools) #load the necessary library
+dyn.load('/home/jc246980/Freshwater_scripts/Final/Hydrology/Doug_Ward/05.Budyko.so') #load the C code
 
 ###set directories
 wd = '/home/jc165798/working/NARP_hydro/'; setwd(wd) #deifne and set the working directory
@@ -44,13 +46,8 @@ if (outname=='current') {
 	pr = read.csv(pr,as.is=TRUE) #read in precipitatation
 }
 
-#trim up the data to years of interest
-yois = 1961:1990
-cois = NULL; for (yy in yois) cois = c(cois,grep(yy,colnames(pr)))
-tmin = tmin[,cois]; tmax = tmax[,cois]; pr = pr[cois]
-
 ###run the analysis and write out data
-tt = .Call('BudykoBucketModelDynamic',
+tt = .Call('BudykoBucketModelStatic',
 	pos$DEM, #dem info
 	as.matrix(pr), # monthly precip
 	as.matrix(tmin), #monthly tmin
@@ -62,12 +59,10 @@ tt = .Call('BudykoBucketModelDynamic',
 	ncol(pr) #number of months to run through
 )
 
-wd='/home/jc246980/Hydrology.trials/Output_1960_1990';setwd(wd)
-
-Eact = tt[[1]]; save(Eact, file=paste(wd,'/E_act_30yearagg_dynamic_1960',sep='')) #save the actual evapotranspiration
-Epot = tt[[2]]; save(Epot, file=paste(wd,'/E_pot_30yearagg_dynamic_1960',sep='')) #save the potential evapotranspiration
-Qrun = tt[[3]]; save(Qrun, file=paste(wd,'/Q_run_30yearagg_dynamic_1960',sep='')) #save the runoff
-Rnet = tt[[4]]; save(Rnet, file=paste(wd,'/R_net_30yearagg_dynamic_1960',sep='')) #save the net radiation
+wd='/home/jc246980/Hydrology.trials/Outputs/Output_1960_1990/';setwd(wd)
 
 
-
+Eact = tt[[1]]; save(Eact, file=paste('E_act_current_5km_means_1960.Rdata',sep='')) #save the actual evapotranspiration
+Epot = tt[[2]]; save(Epot, file=paste('E_pot_current_5km_means_1960.Rdata',sep='')) #save the potential evapotranspiration
+Qrun = tt[[3]]; save(Qrun, file=paste('Q_run_current_5km_means_1960.Rdata',sep='')) #save the runoff
+Rnet = tt[[4]]; save(Rnet, file=paste('R_net_current_5km_means_1960.Rdata',sep='')) #save the net radiation
