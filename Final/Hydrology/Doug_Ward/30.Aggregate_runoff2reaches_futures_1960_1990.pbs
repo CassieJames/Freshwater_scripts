@@ -2,7 +2,7 @@
 #PBS -c s
 #PBS -j oe
 #PBS -m ae
-#PBS -N 50.Hydrology_5km_static_script2run_future.r
+#PBS -N 30.Aggregate_runoff2reaches_futures_1960_1990.r
 #PBS -M jc246980@jcu.edu.au
 #PBS -l walltime=9999:00:00
 #PBS -l nodes=1:ppn=4
@@ -18,4 +18,4 @@ echo "------------------------------------------------------"
 cd $PBS_O_WORKDIR
 
 #run the R script
-R CMD BATCH 50.Hydrology_5km_static_script2run_future.r 50.Hydrology_5km_static_script2run_future.r.txt
+R CMD BATCH 30.Aggregate_runoff2reaches_futures_1960_1990.r 30.Aggregate_runoff2reaches_futures_1960_1990.txt
