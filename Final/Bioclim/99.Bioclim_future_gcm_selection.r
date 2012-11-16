@@ -1,6 +1,6 @@
 ################################################################################
 # Script to determine GCMs that are least different to 10, 50 and 90th percentiles of future projections
-# C James 11th October 2012
+# C James.............11th October 2012
 
 #load necessary libraries
 library(SDMTools)

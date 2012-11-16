@@ -1,5 +1,8 @@
-#drafted by Cassie james 
+#drafted by Jeremy VanDerWal ( jjvanderwal@gmail.com ... www.jjvanderwal.com )
 #GNU General Public License .. feel free to use / distribute ... no warranties
+
+####################################################################################
+#START R
 ####################################################################################
 library(SDMTools) #load the necessary library
 

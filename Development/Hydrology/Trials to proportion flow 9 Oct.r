@@ -65,7 +65,7 @@ write.csv(runoff,paste("/home/jc246980/Hydrology.trials/Aggregate_reach/Runoff.a
 ################################################################################
 # create partitions for accumulated flow
 
-Runoff.part<- merge(runoff, From_node, by='HydroID')
+Runoff.part<- merge(Reach_runoff, From_node, by='HydroID')
 colnames(Annualmean) =c('SEGMENTNO', 'RUNNANNMEAN')
 Runoff.part<- merge(Runoff.part, Annualmean, by='SEGMENTNO')
 
@@ -75,7 +75,7 @@ colnames(Flow_agg_From_Node) =c('From_Node', 'From_node_Flow')
 
 Runoff.part<- merge(Runoff.part, Flow_agg_From_Node, by='From_Node')             # Append flow data aggregated by From_Node to data frame
 
-runoff$acc_prop = (1+Runoff.part$RUNNANNMEAN)/(1+Runoff.part$From_node_Flow) # create proportions  (NB where segment number is duplicated (so seg_prop <1) and a bi channel is identified use the seg_prop proportion to apportion the accumulated runoff
+runoff$acc_prop = (1+Runoff.part$Reach_runoff)/(1+Runoff.part$From_node_Flow) # create proportions  (NB where segment number is duplicated (so seg_prop <1) and a bi channel is identified use the seg_prop proportion to apportion the accumulated runoff
 
 
 ################################################################################

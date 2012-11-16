@@ -3,11 +3,11 @@
 library(SDMTools); library(maptools)#load the necessary libraries
 source('/home/jc148322/scripts/libraries/cool_functions.r')
 
-image.dir = "/home/jc246980/ALA_downloads/Distribution_Images/Fish_distributions"          #location of images
-work.dir="/home/jc246980/ALA_downloads"             # location of full fish species list
+image.dir = "/home/jc246980/Species_data/ALA_downloads/Distribution_Images/Fish_distributions"          #location of images
+work.dir="/home/jc246980/Species_data/ALA_downloads"             # location of full fish species list
 data.dir="/home/jc246980/Janet_Stein_data"       # location of catchment and river files
 ala.data = "/home/jc214262/Refugia/Vert_data/ALA_Vertebrate_data"      #location of ALA files
-Sp_north.dir="/home/jc246980/NorthernOZFish/Data"   #location of northern fish data
+Sp_north.dir="/home/jc246980/Species_data/NorthernOZFish/Data/"   #location of northern fish data
 
 
 base.asc = read.asc.gz('/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05/base.asc.gz') #read in the base asc file
@@ -21,6 +21,7 @@ NorthSpecies = list.files(Sp_north.dir)   # list north species csv files
 northspeciesName = unlist(strsplit(NorthSpecies,".csv"));northspeciesName=gsub('_',' ',northspeciesName)     # remove '.csv' and substitute ' " for '_' in species names
 otherfish <- as.matrix(FullList$full_name[!(FullList$full_name %in% northspeciesName)])    # identify only those species in the full list that don't occur in the northern species list
 otherfishcsv = gsub(' ','_',otherfish); otherfishcsv=paste(otherfishcsv,'.csv', sep='')    # format otherfish names so they match ALA file names
+
 
 ###################################
 #Bring in all the necessary information
@@ -36,7 +37,7 @@ load("/home/jc246980/Janet_Stein_data/catchments.Rdata")
 for (sp in 1:length(otherfishcsv)) { cat(otherfishcsv[sp],'\n')
 
       if(file.exists(paste(ala.data, '/',otherfishcsv[sp],sep=''))){
-              species.data.ala = read.csv(paste(ala.data, '/',otherfishcsv[sp],sep=''))
+             species.data.ala = read.csv(paste(ala.data, '/',otherfishcsv[sp],sep=''))
 
              assign.list(min.lon,max.lon,min.lat,max.lat) %=% dynamic.zoom(species.data.ala$LONGDEC,species.data.ala$LATDEC, padding.percent=5)
 
@@ -76,7 +77,7 @@ for (sp in 1:length(otherfishcsv)) { cat(otherfishcsv[sp],'\n')
                               assign.list(l,r,b,t) %=% par("usr")
 
                               image(base.asc,ann=FALSE,axes=FALSE,col='#E5E5E5', zlim=c(0,1))
-                              image(clip.image(l,r,b,t),ann=FALSE,axes=FALSE, col="grey20",add=TRUE)
+                              image(clip.image(l,r,b,t),ann=FALSE,axes=FALSE, col="black",add=TRUE)
 
 
                               plot(1:20,axes=FALSE,ann=FALSE,type='n')

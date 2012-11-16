@@ -17,8 +17,8 @@ YEARs=seq(2015, 2085,10)
 
 ####Currents
 # Load currents, calculate monthly means and aggregate to reach for dynamic script
-load("/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/Q_run_30yearagg_dynamic_1960.Rdata")  # Load runoff
-Qrun_agg=Qrun
+load("/home/jc246980/Hydrology.trials/Outputs/Output_1960_1990/Q_run_30yearagg_dynamic_1960.Rdata")  # Load runoff
+Qrun_agg=Qrun[,13:372] # remove 1960 data!
 
 yois=1961:1990
 tt = expand.grid(sprintf('%02i',1:12),yois=yois);tt = paste(tt[,1],tt[,2],sep='_'); colnames(Qrun_agg) = tt #add the column names

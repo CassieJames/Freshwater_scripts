@@ -9,7 +9,7 @@ pr='/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05/monthly.pr.csv'
 outname='current_5km_means'
 
 library(SDMTools) #load the necessary library
-dyn.load('/home/jc165798/SCRIPTS/sdmcode/R_development/hydrology/Budyko.so') #load the C code
+dyn.load('/home/jc246980/Freshwater_scripts/Final/Hydrology/Cassie_James/05.Budyko.so') #load the C code
 
 ###set directories
 wd = '/home/jc165798/working/NARP_hydro/'; setwd(wd) #define and set the working directory

@@ -14,7 +14,7 @@ pr='/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/monthly.csv/rain194
 outname='current'
 
 library(SDMTools) #load the necessary library
-dyn.load('/home/jc246980/Scripts/Final/Hydrology/Cassie_James/05.Budyko.so') #load the C code
+dyn.load('/home/jc246980/Freshwater_scripts/Final/Hydrology/Cassie_James/05.Budyko.so') #load the C code
 
 ###set directories
 wd = '/home/jc165798/working/NARP_hydro/'; setwd(wd) #deifne and set the working directory

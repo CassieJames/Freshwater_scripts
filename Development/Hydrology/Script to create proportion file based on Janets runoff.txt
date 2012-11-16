@@ -1,0 +1,40 @@
+
+qsub -l nodes=2 -l pmem=5gb -I
+
+# load R
+
+library(SDMTools); library(maptools)
+
+# Create runoff table
+out.dir="/home/jc246980/Hydrology.trials/"
+wd = "/home/jc246980/Hydrology.trials/"; setwd(wd)   
+load(paste(wd,'Reach_runoff_5km.Rdata',sep=''))    
+colnames(Reach_runoff)=c('SegmentNo', 'Annual_runoff')
+
+networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
+From_node = networkatts[,c(2,9,11)]
+
+Runoff.part<- merge(Reach_runoff, From_node, by='SegmentNo')
+
+Runoff.part=Runoff.part[,c(1,3,4,2)]
+
+Flow_agg_From_Node= aggregate(Runoff.part$Annual_runoff, by = list(Runoff.part$From_Node), sum)      # sum flow at all duplicated From_Nodes
+
+colnames(Flow_agg_From_Node) =c('From_Node', 'From_node_Flow')
+Runoff.part<- merge(Runoff.part, Flow_agg_From_Node, by='From_Node')   
+
+Runoff.part$acc_prop = (1+Runoff.part$Annual_runoff)/(1+Runoff.part$From_node_Flow) # create proportions  (NB where segment number is duplicated (so seg_prop <1) and a bi channel is identified use the seg_prop proportion to apportion the accumulated runoff
+  
+new.proportions = merge(Proportion,Runoff.part,by='HydroID')
+
+proportion=new.proportions[,c(1,2,3,10,5)]
+
+colnames(proportion)=c('HydroID','SegmentNo', 'ChannelType', 'BiProp', 'SegProp')
+
+write.csv(proportion,paste(out.dir,'proportion.csv',sep=''),row.names=F)
+
+#################################################
+
+
+
+

@@ -1,19 +1,22 @@
 ################################################################################
-# aggregate corrected runoff generated at 5km resolution onto Janets reaches for 1976 to 2005 currents
-
+# Script to aggregate runoff generated at 5km resolution onto Janets reaches for 1976 to 2005 currents (dynamic and static)
+# C James.......October 2012
+####
 library(SDMTools) #load the necessary library
 
+#### set directories
 wd = '/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05'; setwd(wd)
+out.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/"
+future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
+
 pos = read.csv('base.positions.csv',as.is=TRUE)                                 # read in positions on grid at 5 km resolution
 pos$UID = 1:286244 
-out.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/"
-
-load("/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_UID_5km.Rdata") 
-
-future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
 ESs=list.files(future.dir, pattern='RCP')
 GCMs = list.files(paste(future.dir,pattern=ESs[1],sep=''))
 YEARs=seq(2015, 2085,10)
+
+load("/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_UID_5km.Rdata") 
+
 
 ####Currents
 # Load currents, calculate monthly means and aggregate to reach for dynamic script

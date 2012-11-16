@@ -1,0 +1,30 @@
+
+#Identifying headwater streams given the problem with false heads
+###First step is to identify headwaters as those that are not in the 'nextdown' column of the table
+headwaters=network[which(!(network$HydroID %in% network$NextDownID)),]
+
+
+###Second step is to remove all the 'false heads'
+
+dup_nodes=network$From_Node[duplicated(network$From_Node)]    
+dup_nodes=unique(dup_nodes)                                            # list limited now to unique vales for duplicate from nodes
+
+headwaters_2=headwaters[which(!(headwaters$From_Node %in% dup_nodes)),]    
+
+##Third step is to merge data with annual runoff
+headwaterIDs=headwaters_2[,c(2,9)]
+
+colnames(Annualmean)[1]="SegmentNo"
+
+Head_water_runoff=merge(headwaterIDs,Annualmean,by='SegmentNo')
+
+###Finally id max
+max(Head_water_runoff$RUNANNMEAN)
+
+Head_water_runoff[which(Head_water_runoff$RUNANNMEAN==88932.7),]
+
+
+#####Trying it with From and to nodes
+
+###First step is to identify headwaters as those that are not in the to_node column of the table
+headwaters=network[which(!(network$From_node %in% network$To_node)),]
