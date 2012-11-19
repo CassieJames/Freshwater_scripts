@@ -85,8 +85,8 @@ YEARs=c("stat","dyn",YEARs) # Append static and dynamic to YEARs
 						tdata=merge(out,networkids, by='HydroID')
 						Flow_accum= aggregate(tdata[,c(2:13)], by = list(tdata$SegmentNo), sum)   
 						
-						if (YEARs="stat") {
-						out=Flow_accum)
+						if (YEARs=="stat") {
+						out=Flow_accum
 						}else{cbind(out,Flow_accum[,2:13])} 
 				        
 						}
