@@ -46,7 +46,7 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 		
 		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))){
 				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
-				species.data.latdec=species.data.db$LATDEC
+				species.data.latdec=species.data.db$LATDEC*-1
 				species.data.longdec=species.data.db$LONGDEC
 		}
 	  
@@ -60,7 +60,7 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
 				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
 				species.data.longdec=c(species.data.ala$Longitude_processed, species.data.db$LONGDEC)
-				species.data.latdec=c(species.data.ala$Latitude_processed, species.data.db$LATDEC)
+				species.data.latdec=c(species.data.ala$Latitude_processed, (species.data.db$LATDEC*-1))
 		}
 		
 		if(file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep=''))){
@@ -74,16 +74,16 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
 				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
 				species.data.longdec=c(species.data.db$LONGDEC, species.data.add$Long)
-				species.data.latdec=c(species.data.db$LATDEC, species.data.add$Lat)
+				species.data.latdec=c((species.data.db$LATDEC*-1), species.data.add$Lat)
 		}
 		
-		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep='')) && (paste(craydata.dir,"/", full.list[sp],sep=''))){
+		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep='')) && file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))){
 				
 				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
 				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
 				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
 				species.data.longdec=c(species.data.ala$Longitude_processed, species.data.db$LONGDEC, species.data.add$Long)
-				species.data.latdec=c(species.data.ala$Latitude_processed, species.data.db$LATDEC, species.data.add$Lat)
+				species.data.latdec=c(species.data.ala$Latitude_processed, (species.data.db$LATDEC*-1), species.data.add$Lat)
 		}
 		
 
