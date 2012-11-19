@@ -169,7 +169,7 @@ colnames(tdata)[27]='month.max.clust'
 
 out.dir = "/home/jc246980/Hydrology.trials/Hydrology metrics/"
 
-write.csv(tdata,paste(out.dir,"Hydrology_metrics_current_1976to2005.csv",sep=''),row.names=F)	
+write.csv(tdata,paste(out.dir,"Hydrology_metrics_current_1961to1990.csv",sep=''),row.names=F)	
 ################################################################################
 
 

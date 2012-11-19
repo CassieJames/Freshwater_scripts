@@ -19,33 +19,22 @@ for (fam in 1:length(families)) { cat(families[fam],'\n')
 
 #Script to sort out crayfish data from crayfish database
 
-database.dir="/home/jc246980/Species_data/Crayfish_database"
-tdata = read.csv(paste(database.dir, '/',"CrayfishRivermodellingrecords.csv",sep=''))
-species=unique(tdata$Species)
+database.dir="/home/jc246980/Species_data/"
+tdata = read.csv(paste(database.dir, '/',"Additional_data_crayfish.csv",sep=''))
+species=colnames(tdata[,6:65])
 
       for (sp in 1:length(species)) { cat(species[sp],'\n')
 
                    yabbie <- tdata[which(tdata$Species ==species[sp]),]
                    
-                   write.csv(yabbie,paste("/home/jc246980/Species_data/Crayfish_database/Additional_records/",gsub(' ','_',species[sp]),".csv", sep = ''), row.names = F )
+                   write.csv(yabbie,paste("/home/jc246980/Species_data/Crayfish_database/Crayfish_species/",gsub(' ','_',species[sp]),".csv", sep = ''), row.names = F )
 
         }
 
 
 #Script to sort out additional crayfish data from crayfish database
 
-database.dir="/home/jc246980/Species_data/Crayfish_database"
-craydata = read.csv(paste(database.dir, '/',"Additional_data_crayfish.csv",sep=''))
-species=colnames(craydata[,6:65])
-		
-		for (sp in species) { cat(species[sp],'\n')
-					
-					craysp=craydata[which(craydata[,sp]==1),1:5]
-				    write.csv(craysp,paste("/home/jc246980/Species_data/Crayfish_database/Additional_records/",sp,".csv", sep = ''), row.names = F )
 
-		}
-
-		
 		
 		
 # Script to map yabbies
