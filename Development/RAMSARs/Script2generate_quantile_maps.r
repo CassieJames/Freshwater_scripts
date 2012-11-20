@@ -40,7 +40,7 @@ RAMSARS = unique(na.omit(pos$RAMSAR)) # create RAMSAR vector
 # map annual percentile, SD and delta's for data annual mean temperature 
 
 Ramsarshape = readShapePoly('/home/jc246980/RAMSAR/GISlayers/ramsar_wetlands_for_download.shp') #read in your shapefile
-load('/home/jc246980/RAMSAR/RCP85_percentiles.Rdata') 	#load the annual temperature percetniles for 2085 as an example 
+load('/home/jc246980/RAMSAR/RCP85_percentiles.Rdata') 	#load the annual temperature percentiles for 2085 as an example 
 load("/home/jc246980/Janet_Stein_data/Rivers.Rdata")
 load("/home/jc246980/Janet_Stein_data/catchments.Rdata")
 

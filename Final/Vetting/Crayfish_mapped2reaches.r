@@ -17,7 +17,7 @@ load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
 
 
-Cray_data = matrix(NA, nrow=nrow(networkatts), ncol=140)
+Cray_data = matrix(NA, nrow=nrow(networkatts), ncol=136)
 Cray_data [,1] <- networkatts[,9]
 species=list.files(craydata.dir)
 species2=list.files(craydatabase)
@@ -27,6 +27,7 @@ full.list=unique(c(species, species2, species3))
 
 speciesname=gsub('.csv','',full.list)		
 colnames(Cray_data)=c("SegmentNo", speciesname)
+#species that will have to be removed: # Cherax depressus, Cherax_neocarinatus, Cherax quinquecarinatus
 
 
 	for (sp in 1:length(full.list)) { cat(full.list[sp],'\n')
@@ -95,5 +96,6 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 		Cray_data[!(Cray_data$SegmentNo %in% SegmentNo_SP_Present),speciesname] <- 0
 		
 		}	
+
 
 	write.csv(Cray_data,paste(out.dir,'Crayfish_reach.csv',sep=''),row.names=F)

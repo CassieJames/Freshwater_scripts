@@ -1,5 +1,5 @@
 ################################################################################
-# Script to ggregate bioclim variables generated at 5km resolution onto Janets reaches for futures
+# Script to aggregate bioclim variables generated at 5km resolution onto Janets reaches for futures
 # C. James 23rd October 2012
 
 library(SDMTools) #load the necessary library
@@ -13,6 +13,7 @@ cur.1960_1990.dir = '/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/ba
 out.dir="/home/jc246980/Climate/5km/Current_1976_2005/Bioclim_asci_reach/"
 ESs = list.files(futdir, pattern="RCP85") 										# list the emission scenarios
 GCMs = list.files(paste(futdir,ESs[1],sep=''))									# get a list of GCMs
+GCMs[9:18]
 YEAR=seq(2015, 2085, 10)														# define years of interest
 tt=expand.grid('bioclim',sprintf('%02i',1:19),'.asc.gz',sep=''); Bioclims = paste(tt[,1],"_",tt[,2],tt[,3], sep='')
 																	
