@@ -27,9 +27,6 @@ network = read.csv(network.file,as.is=TRUE) #read in the netowrk attribute data
 proportion = read.csv(proportion.file,as.is=TRUE) #read in the proportionate data
 load(data.file)
 stream.data = Runoff #read in the stream data to be summarized
-SegmentNo=as.data.frame(c(1:1466889))
-stream.data=cbind(SegmentNo,stream.data)
-colnames(stream.data)[1] = "SegmentNo"
 
 
 #prepare all data

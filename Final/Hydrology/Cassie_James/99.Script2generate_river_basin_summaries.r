@@ -25,7 +25,8 @@ load('/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_riverba
 ##########Load raw runoff data (not accumulated!)
 
 load("/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/Q_run_30yearagg_dynamic.Rdata")  # Load runoff
-Qrun_agg=Qrun
+load("/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/Q_run_30yearagg.Rdata")  # Load runoff
+Qrun_agg=Q_run
 
 yois=1976:2005
 tt = expand.grid(sprintf('%02i',1:12),yois=yois);tt = paste(tt[,1],tt[,2],sep='_'); colnames(Qrun_agg) = tt #add the column names
@@ -43,6 +44,10 @@ tt = expand.grid(mm,"Cur_dyn");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Q_run
 
 Q_run_curmean_dynamo=as.data.frame(Q_run_curmean_dynamo) # Monthly data
 
+##########Load raw runoff data mean values
+load("/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/Q_run_30yearagg.Rdata")  # Load runoff
+
+
 tdata=pos 																		  # make a copy of pos with UID appended
 tdata$annual=rowSums(Q_run_curmean_dynamo)										              # Append gridded runoff data
 FINAL<- merge(Area_agg, tdata, by='UID')                                          # Merge Area_agg with 5km pos file                            
@@ -51,7 +56,7 @@ riverbasin_runoff_final = aggregate(FINAL$Runoff, by = list(FINAL$riverbasin), s
 
 
 wd="/home/jc246980/Hydrology.trials/"
-write.csv(runoff_sum,paste(wd,'Runoff_summed_across_riverbasins.csv',sep=''))
+write.csv(riverbasin_runoff_final,paste(wd,'Runoff_summed_across_riverbasins_agg_static.csv',sep=''))
 
 
 

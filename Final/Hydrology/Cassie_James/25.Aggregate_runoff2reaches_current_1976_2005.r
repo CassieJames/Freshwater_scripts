@@ -38,6 +38,7 @@ mm=c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'
 
 tt = expand.grid(mm,"Cur_dyn");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Q_run_curmean_dynamo) = tt #add the column names
 Runoff=NULL
+
 	for (ii in 1:ncol(Q_run_curmean_dynamo)){
 		
 		tdata=pos 																		  # make a copy of pos with UID appended
@@ -45,11 +46,13 @@ Runoff=NULL
 		FINAL<- merge(Area_agg, tdata, by='UID')                                          # Merge Area_agg with 5km pos file                            
 		FINAL$Runoff = (FINAL$AREA/1000000) * FINAL$runoff_rate                           # Multiply area(in km) by runoff (in mm/km)
 		Reach_runoff_final = aggregate(FINAL$Runoff, by = list(FINAL$SegmentNo), sum) 	  # Aggregate runoff to reaches
-		Runoff=cbind(Runoff, Reach_runoff_final$x)
-
+		
+		if(ii==1){
+		Runoff=Reach_runoff_final
+		}else{Runoff=cbind(Runoff, Reach_runoff_final$x)}
 	}
 
-tt = expand.grid(mm,"Cur_dyn");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Runoff) = tt #add the column names
+tt = expand.grid(mm,"Cur_dyn");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Runoff) = c("SegmentNo",tt) #add the column names
 save(Runoff, file=paste(out.dir,"Current_dynamic.Rdata",sep='')) #save the runoff	
 
 # Load currents and aggregate to reach for static script
@@ -64,9 +67,14 @@ Runoff=NULL
 		FINAL<- merge(Area_agg, tdata, by='UID')                                          # Merge Area_agg with 5km pos file                            
 		FINAL$Runoff = (FINAL$AREA/1000000) * FINAL$runoff_rate                           # Multiply area(in km) by runoff (in mm/km)
 		Reach_runoff_final = aggregate(FINAL$Runoff, by = list(FINAL$SegmentNo), sum) 	  # Aggregate runoff to reaches
-		Runoff=cbind(Runoff, Reach_runoff_final$x)
+		
+		if(ii==1){
+		Runoff=Reach_runoff_final
+		}else{Runoff=cbind(Runoff, Reach_runoff_final$x)}
 
+		
+		
 	}
-tt = expand.grid(mm,"Cur_stat");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Runoff) = tt #add the column names
+tt = expand.grid(mm,"Cur_stat");tt = paste(tt[,2],tt[,1],sep='_'); colnames(Runoff) = c("SegmentNo",tt)  #add the column names
 save(Runoff, file=paste(out.dir,"Current_static.Rdata",sep='')) #save the runoff	
 	

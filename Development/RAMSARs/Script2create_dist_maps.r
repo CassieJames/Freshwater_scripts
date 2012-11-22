@@ -15,7 +15,7 @@ wd = '/home/jc165798/working/NARP_hydro/stability/OZ_5km/data/'; setwd(wd) #defi
 future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
 data.dir="/home/jc246980/RAMSAR/Output/RAMSAR_site_data/tmp/"
 out.dir='/home/jc246980/RAMSAR/Output/RAMSAR_quantile_data/'
-
+image.dir="/home/jc246980/RAMSAR/Output/RAMSAR_images/"
 
 ###Set up base files
 
@@ -29,7 +29,7 @@ YEARs = seq(2015, 2085,10)
 
 ###Set ESs and time period 
 
-load('/home/jc165798/working/NARP_hydro/stability/OZ_5km/distance_stability/tmp_RCP45_2055.Rdata') 	
+tdata=load('/home/jc165798/working/NARP_hydro/stability/OZ_5km/distance_stability/tmp_RCP45_2085.Rdata') 	
 outquant = t(apply(outdist,1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
 
 
@@ -71,7 +71,15 @@ for(ram in RAMSARS) {
 
 		assign.list(min.lon,max.lon,min.lat,max.lat) %=% dynamic.zoom(tdata$lon,tdata$lat, padding.percent=20)
         ## this creates the mini-australia, called ‘clip’
-       
+        if (max.lat>=-18 & min.lat<=-34 |
+                        max.lon>=148 & min.lon<=120 ) {
+                        xlim=c(min(pos$lon),max(pos$lon));
+                        ylim=c(min(pos$lat),max(pos$lat))
+                        
+        }else{
+                        xlim=c(min.lon,max.lon);
+                        ylim=c(min.lat,max.lat)
+             }
 
 		setwd(image.dir) 
 		Ramsar_name=RAMinfo$RAMSAR_NAM[which(RAMinfo$REFCODE==64)][1]
@@ -92,7 +100,7 @@ for(ram in RAMSARS) {
 		  image(baseasc, ann=FALSE,axes=FALSE,col='white',  xlim=xlim,ylim=ylim)
 		  image(baseasc, ann=FALSE,axes=FALSE,col='grey', xlim=xlim,ylim=ylim,xpd=FALSE,add=TRUE)  
 		  tasc = baseasc; tasc[cbind(pos$row,pos$col)] = outdat[,6]
-		  image(tasc,ann=FALSE,axes=FALSE,zlim=deltalims,col=cols, add=TRUE) 
+		  image(tasc,ann=FALSE,axes=FALSE,zlim=lims10,col=cols, add=TRUE) 
 		  plot(rivers, lwd=2, ann=FALSE,axes=FALSE, add=TRUE, col='cornflowerblue')
           plot(Ramsarshape, lwd=2, ann=FALSE,axes=FALSE, add=TRUE)
 		  plot(catchments, lwd=2, ann=FALSE,axes=FALSE, add=TRUE,border="darkgrey", lwd=1.5)		
@@ -101,7 +109,7 @@ for(ram in RAMSARS) {
 		  image(baseasc, ann=FALSE,axes=FALSE,col='white',  xlim=xlim,ylim=ylim)
 		  image(baseasc, ann=FALSE,axes=FALSE,col='grey', xlim=xlim,ylim=ylim,xpd=FALSE,add=TRUE)
 		  tasc = baseasc; tasc[cbind(pos$row,pos$col)] = outdat[,7]
-		  image(tasc,ann=FALSE,axes=FALSE,zlim=deltalims,col=cols, add=TRUE) 
+		  image(tasc,ann=FALSE,axes=FALSE,zlim=lims50,col=cols, add=TRUE) 
 		  plot(rivers, lwd=2, ann=FALSE,axes=FALSE, add=TRUE, col='cornflowerblue')
           plot(Ramsarshape, lwd=2, ann=FALSE,axes=FALSE, add=TRUE)		  
 	      plot(catchments, lwd=2, ann=FALSE,axes=FALSE, add=TRUE,border="darkgrey",  lwd=1.5)	
@@ -110,7 +118,7 @@ for(ram in RAMSARS) {
 		  image(baseasc, ann=FALSE,axes=FALSE,col='white',  xlim=xlim,ylim=ylim)
 		  image(baseasc, ann=FALSE,axes=FALSE,col='grey', xlim=xlim,ylim=ylim,xpd=FALSE,add=TRUE)	  
 		  tasc = baseasc; tasc[cbind(pos$row,pos$col)] = outdat[,8]
-		  image(tasc,ann=FALSE,axes=FALSE,zlim=deltalims,col=cols, add=TRUE) 
+		  image(tasc,ann=FALSE,axes=FALSE,zlim=lims90,col=cols, add=TRUE) 
 		  plot(rivers, lwd=2, ann=FALSE,axes=FALSE, add=TRUE, col='cornflowerblue')
    		  plot(Ramsarshape, lwd=2, ann=FALSE,axes=FALSE, add=TRUE)
 		  plot(catchments, lwd=2, ann=FALSE,axes=FALSE, add=TRUE,border="darkgrey",  lwd=1.5)	

@@ -27,12 +27,11 @@ YEARs=c("stat","dyn",YEARs) # Append static and dynamic to YEARs
 
 						cois=NULL
 						cois = c(cois,grep(yy,colnames(Runoff)))
-						Runoff_yoi = Runoff[,cois]
+						Runoff_yoi = Runoff[,c(1,cois)]
 						
 						### sample data
 						proportionate.accumulation=TRUE #false is accumulate area; true is accumulation runnoff
 						wd = "/home/jc246980/Hydrology.trials/Flow_accumulation/" #define the working directory
-						data.file="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/Current_static.Rdata" #define the name of the data file
 						network.file="/home/jc165798/working/NARP_hydro/flow_accumulation/NetworkAttributes.csv" #define the name of the network attribute data file
 						proportion.file="/home/jc165798/working/NARP_hydro/flow_accumulation/proportion.csv" #define the name of the proportionate attribute data file
 						accum.function.file="/home/jc165798/SCRIPTS/git_code/NCCARF_freshwater_refugia/hydrology/dev/accumulate_functions.R" #define the location of the accumulation functions
@@ -45,12 +44,7 @@ YEARs=c("stat","dyn",YEARs) # Append static and dynamic to YEARs
 						###read in necessary data
 						network = read.csv(network.file,as.is=TRUE) #read in the netowrk attribute data
 						proportion = read.csv(proportion.file,as.is=TRUE) #read in the proportionate data
-						load(data.file)
-						stream.data = Runoff #read in the stream data to be summarized
-						SegmentNo=as.data.frame(c(1:1466889))
-						stream.data=cbind(SegmentNo,stream.data)
-						colnames(stream.data)[1] = "SegmentNo"
-
+						stream.data = Runoff_yoi #read in the stream data to be summarized
 
 						#prepare all data
 						db = merge(network,proportion[,c(1,4,5)],all=TRUE) #read in proportion rules and merge with network data

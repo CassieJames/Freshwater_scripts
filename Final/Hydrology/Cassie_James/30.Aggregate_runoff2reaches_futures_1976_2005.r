@@ -46,7 +46,9 @@ tt=c('SegmentNo',ttstatic,ttdyn,ttdat)
 				FINAL<- merge(Area_agg, tdata, by='UID')                                          # Merge Area_agg with 5km pos file                            
 				FINAL$Runoff = (FINAL$AREA/1000000) * FINAL$runoff_rate                           # Multiply area(in km) by runoff (in mm/km)
 				Reach_runoff_final = aggregate(FINAL$Runoff, by = list(FINAL$SegmentNo), sum) 	  # Aggregate runoff to reaches
-				Runoff=cbind(Runoff, Reach_runoff_final$x)
+				if(ii==1){
+				Runoff=Reach_runoff_final
+				}else{Runoff=cbind(Runoff, Reach_runoff_final$x)}
 				Runoff=round(Runoff,4)
 			}
 		
