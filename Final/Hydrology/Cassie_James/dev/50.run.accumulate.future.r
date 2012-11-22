@@ -36,7 +36,7 @@ db = merge(db,stream.data,all=TRUE) #merge data into db
 db[,cois]=db[,cois]*db$SegProp #Calculate local attribute attributed to each HydroID and overwrite SegNo attribute
 db = db[,c(11,12,1:10,13:ncol(db))] #reorder the columns
 db=db[which(is.finite(db[,cois[1]])),] #remove NAs (islands, etc)
-if (use.proportion==FALSE) db$BiProp=1
+if (proportionate.accumulation==FALSE) db$BiProp=1
 rm(list=c("network","stream.data","proportion")) #cleanup extra files
 
 ### create graph object and all possible subgraphs
