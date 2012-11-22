@@ -45,7 +45,7 @@ full.list=unique(c(species, species2, species3))
 speciesname=gsub('.csv','',full.list)		
 colnames(Fish_data)=c("SegmentNo", speciesname)
 
-Fish_data=NULL
+
 
 	for (sp in 1:length(full.list)) { cat(full.list[sp],'\n')
 		speciesname=gsub('.csv','',full.list[sp])
