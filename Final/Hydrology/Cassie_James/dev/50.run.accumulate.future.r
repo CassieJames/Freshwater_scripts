@@ -52,10 +52,10 @@ stopCluster(cl) #stop the cluster for analysis
 
 ###need to store the outputs
 out = do.call("rbind",tout) #aggregate the list into a single matrix
-db2 = merge(db,out,by='HydroID') #merge this back into the overall database
+db2 = merge(db[,c('HydroID','SegmentNo')],out,by='HydroID') #merge this back into the overall database
 
-out=aggregate(db2[,c('SegmentNo',cois)], by = list(out$SegmentNo), sum)
-
+out=aggregate(db2[,cois], by = list(db2$SegmentNo), sum)
+colnames(out)[1]='SegmentNo'
 filename=gsub('.Rdata','',tfile)
 write.csv(out,paste(out.dir,filename,'.csv',sep=''),row.names=F)
 
