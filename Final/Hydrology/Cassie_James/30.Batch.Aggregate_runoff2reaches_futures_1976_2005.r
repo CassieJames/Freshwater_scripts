@@ -22,7 +22,7 @@ for(es in ESs) {
 		close(zz) 
 
 		##submit the script
-		system(paste('qsub -m n -l nodes=2 30.',es,'.',gcm,'.aggregate.sh',sep=''))
+		system(paste('qsub -l nodes=2 -l pmem=5gb 30.',es,'.',gcm,'.aggregate.sh',sep=''))
 	}
 }	
 
