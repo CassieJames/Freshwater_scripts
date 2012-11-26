@@ -9,7 +9,7 @@ args=(commandArgs(TRUE)) #get the command line arguements
 for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #evaluate the arguments
 
 ### sample data 
-proportionate.accumulation=FALSE #false is accumulate area; true is accumulation runnoff
+proportionate.accumulation=TRUE #false is accumulate area; true is accumulation runnoff
 wd = "/home/jc165798/working/NARP_hydro/flow_accumulation/" #define the working directory
 data.file=paste(data.dir,tfile,sep='') #define the name of the data file
 network.file="/home/jc165798/working/NARP_hydro/flow_accumulation/NetworkAttributes.csv" #define the name of the network attribute data file
@@ -47,7 +47,7 @@ gg = decompose.graph(g,"weak") #break the full graph into 10000 + subgraphs
 ###do the actual accumulation
 ncore=5 #this number of cores seems most appropriate
 cl <- makeCluster(getOption("cl.cores", ncore))#define the cluster for running the analysis
-	print(system.time({ tout = parLapplyLB(cl,gg,accum.runoff, cois=cois) }))
+	tout = parLapplyLB(cl,gg,accum.runoff, cois=cois) 
 stopCluster(cl) #stop the cluster for analysis
 
 ###need to store the outputs

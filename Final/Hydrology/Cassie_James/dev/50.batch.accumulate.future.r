@@ -4,7 +4,7 @@ out.dir='/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_a
 
 files=list.files()
 files=grep('RCP',files,value=T)
-
+files=files[1:2]
 sh.dir='/home/jc148322/scripts/NARP_freshwater/Hydrology/accumulate_futures.sh/'; dir.create(sh.dir,recursive=T); setwd(sh.dir)
 
 for (tfile in files){ #tfile=files[3]
@@ -20,7 +20,7 @@ for (tfile in files){ #tfile=files[3]
 	close(zz) 
 
 	##submit the script
-	system(paste('qsub -m n -l nodes=2 50.',es,'.',gcm,'.accumulate.sh',sep=''))
+	system(paste('qsub -l nodes=1:ppn=12 50.',es,'.',gcm,'.accumulate.sh',sep=''))
 
 
 }
