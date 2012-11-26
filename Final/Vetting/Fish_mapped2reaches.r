@@ -32,7 +32,7 @@ load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
 
 
-Fish_data = matrix(NA, nrow=nrow(networkatts), ncol=384)
+Fish_data = matrix(NA, nrow=nrow(networkatts), ncol=363)
 Fish_data [,1] <- networkatts[,9]
 species=list.files(fishdata.dir, pattern=".csv")
 species2=list.files(fishatlas.dir)

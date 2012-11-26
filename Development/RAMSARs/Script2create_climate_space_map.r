@@ -67,11 +67,11 @@ RAMSARS=RAMSARS[-c(5,12)] # remove these two temporarily (6 and 31) as they caus
 	out_final$Y_radius=(out_final$Y_ellipse-out_final[,10])
 	
 	
-	png(paste(image.dir,'climate_space_tmxVSpre.png',sep=''),width=dim(baseasc)[1]*2+30, height=dim(baseasc)[1]*2+80, units='px', pointsize=50, bg='#F0F8FF') 
+	png(paste(image.dir,'climate_space_tmxVSpre_RCP45.png',sep=''),width=dim(baseasc)[1]*2+30, height=dim(baseasc)[1]*2+80, units='px', pointsize=50, bg='#F0F8FF') 
 			par(mfrow=c(1,1),mar=c(5,5,2,1), oma=c(0,0,1,0)) 	
 			graph_data = out_final[(out_final$ESs=="RCP85"),]
-			graph_data_2015 = out_final[(out_final$ESs=="RCP85") & (out_final$YEARs==2015),]	
-			graph_data_2085 = out_final[(out_final$ESs=="RCP85") & (out_final$YEARs==2085),]	
+			graph_data_2015 = out_final[(out_final$ESs=="RCP45") & (out_final$YEARs==2015),]	
+			graph_data_2085 = out_final[(out_final$ESs=="RCP45") & (out_final$YEARs==2085),]	
 			ylim=c(round(min(graph_data[,10:12])-50),round(max(graph_data[,10:12])+50))
 			xlim=c(round(min(graph_data[,4:6])-0.5),round(max(graph_data[,4:6])+0.5))
 			plot(rbind(graph_data_2015[,5],graph_data_2085[,5]) ,rbind(graph_data_2015[,11],graph_data_2085[,11]) ,xlim=xlim, ylim=ylim,ylab='Annual Precipitation', xlab='Maximum Monthly Temperature', font.sub=2, font.lab=3,col = greycol(100), cex.lab=1.2, cex.axis=1, axes=T,xaxs='i',yaxs='i', col.axis='black', pch=20)			

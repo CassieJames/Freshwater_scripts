@@ -11,9 +11,8 @@ gisfuture.dir = '/home/jc165798/Climate/CIAS/Australia/5km/bioclim_asc/'
 cur.dir='/home/jc165798/Climate/CIAS/Australia/5km/bioclim_asc/current.76to05/'
 cur.1960_1990.dir = '/home/jc165798/Climate/AWAP.direct.download/summaries/Oz/baseline.61to90/bioclim/'
 out.dir="/home/jc246980/Climate/5km/Current_1976_2005/Bioclim_asci_reach/"
-ESs = list.files(futdir, pattern="RCP85") 										# list the emission scenarios
+ESs = list.files(futdir, pattern="RCP45") 										# list the emission scenarios
 GCMs = list.files(paste(futdir,ESs[1],sep=''))									# get a list of GCMs
-GCMs[9:18]
 YEAR=seq(2015, 2085, 10)														# define years of interest
 tt=expand.grid('bioclim',sprintf('%02i',1:19),'.asc.gz',sep=''); Bioclims = paste(tt[,1],"_",tt[,2],tt[,3], sep='')
 																	

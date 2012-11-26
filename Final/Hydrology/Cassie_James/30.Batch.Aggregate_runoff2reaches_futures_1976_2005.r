@@ -4,7 +4,7 @@ data.dir="/home/jc246980/Hydrology.trials/Outputs/Outputs_Futures/Qrun"
 out.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/"
 future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
 
-ESs=list.files(future.dir, pattern='RCP')
+ESs=list.files(future.dir, pattern='RCP85')
 GCMs = list.files(paste(future.dir,pattern=ESs[1],sep=''))
 
 ###Run loop to aggergate runoff to reach for each twelve month period
@@ -22,8 +22,7 @@ for(es in ESs) {
 		close(zz) 
 
 		##submit the script
-		system(paste('qsub -l nodes=2 -l pmem=5gb 30.',es,'.',gcm,'.aggregate.sh',sep=''))
+		system(paste('qsub -m n -l nodes=1:ppn=4 30.',es,'.',gcm,'.aggregate.sh',sep=''))
 	}
 }	
 
-	
