@@ -1,3 +1,4 @@
+
 ###################################################################################################
 #get the command line arguements
 args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) }
@@ -7,7 +8,7 @@ library(SDMTools)
 wd = '/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05'; setwd(wd)
 pos = read.csv('base.positions.csv',as.is=TRUE)# read in positions on grid at 5 km resolution
 pos$UID = 1:286244
-load("/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_UID_5km.Rdata") 
+load("/home/jc246980/Hydrology.trials/Aggregate_reach/Area_aggregated_by_UID_5km.Rdata")
 
 
 ####Create column headings
@@ -20,9 +21,8 @@ tt=c('SegmentNo',tt)
 load(paste(data.dir,"/",es,"_",gcm,".Rdata",sep='')) #loads Qrun
 cois=colnames(Qrun) #all runoff columns to be manipulated later
 out=cbind(pos,Qrun); rm(Qrun)
-out=merge(Area_agg,out, by='UID')			
-out[,cois] = (out$AREA/1000000) * out[,cois]  # Multiply area(in km) by runoff (in mm/km)
+out=merge(Area_agg,out, by='UID')
+out[,cois] = (out$AREA/1000000) * out[,cois] # Multiply area(in km) by runoff (in mm/km)
 Runoff = aggregate(out[,cois], by = list(out$SegmentNo), sum)
 colnames(Runoff) = tt #add the column names
-save(Runoff, file=paste(out.dir,es,"_",gcm,".Rdata",sep='')) #save the runoff out	
-
+save(Runoff, file=paste(out.dir,es,"_",gcm,".Rdata",sep='')) #save the runoff out 

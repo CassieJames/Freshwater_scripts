@@ -1,7 +1,7 @@
 # C james ...................30th July 2012  
 ############################################################################### 
 #create some images
-
+module load R-2.15.1
 library(plotrix) 
 library(SDMTools)
 base.asc = read.asc.gz('base.asc.gz') #read in the base asc file
