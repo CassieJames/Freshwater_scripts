@@ -30,14 +30,16 @@ stream.data = Runoff #read in the stream data to be summarized
 #prepare all data
 db = merge(network,proportion[,c(1,4,5)],all=TRUE) #read in proportion rules and merge with network data
 cois=colnames(stream.data)[-grep('SegmentNo',colnames(stream.data))] #define a vector of your colnames of interest
+cois=grep(yr,colnames(stream.data),value=T)
 stream.data=as.data.frame(stream.data) #convert attributes to dataframe
+stream.data=stream.data[,c('SegmentNo',cois)]
 stream.data=na.omit(stream.data[which(stream.data$SegmentNo %in% stream.data$SegmentNo),]) #remove extra SegmentNos and missing data
 db = merge(db,stream.data,all=TRUE) #merge data into db
 db[,cois]=db[,cois]*db$SegProp #Calculate local attribute attributed to each HydroID and overwrite SegNo attribute
 db = db[,c(11,12,1:10,13:ncol(db))] #reorder the columns
 db=db[which(is.finite(db[,cois[1]])),] #remove NAs (islands, etc)
 if (proportionate.accumulation==FALSE) db$BiProp=1
-rm(list=c("network","stream.data","proportion")) #cleanup extra files
+rm(list=c("network","stream.data","proportion"));gc() #cleanup extra files
 
 ### create graph object and all possible subgraphs
 g = graph.data.frame(db,directed=TRUE) #create the graph
@@ -57,5 +59,5 @@ db2 = merge(db[,c('HydroID','SegmentNo')],out,by='HydroID') #merge this back int
 out=aggregate(db2[,cois], by = list(db2$SegmentNo), sum)
 colnames(out)[1]='SegmentNo'
 filename=gsub('.Rdata','',tfile)
-write.csv(out,paste(out.dir,filename,'.csv',sep=''),row.names=F)
+write.csv(out,paste(out.dir,filename,'.',yr,'.csv',sep=''),row.names=F)
 
