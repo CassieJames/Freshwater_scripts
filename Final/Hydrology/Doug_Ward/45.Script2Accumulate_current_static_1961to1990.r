@@ -12,7 +12,7 @@
 ### sample data
 proportionate.accumulation=TRUE #false is accumulate area; true is accumulation runnoff
 wd = "/home/jc246980/Hydrology.trials/Flow_accumulation/" #define the working directory
-data.file="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/Current_static.Rdata" #define the name of the data file
+data.file="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1960to1990/Current_static.Rdata" #define the name of the data file
 network.file="/home/jc165798/working/NARP_hydro/flow_accumulation/NetworkAttributes.csv" #define the name of the network attribute data file
 proportion.file="/home/jc165798/working/NARP_hydro/flow_accumulation/proportion.csv" #define the name of the proportionate attribute data file
 accum.function.file="/home/jc165798/SCRIPTS/git_code/NCCARF_freshwater_refugia/hydrology/dev/accumulate_functions.R" #define the location of the accumulation functions
@@ -62,6 +62,6 @@ tdata=merge(out,networkids, by='HydroID')
 Flow_accum= aggregate(tdata[,c(2:13)], by = list(tdata$SegmentNo), sum)   
 colnames(Flow_accum)[1]=c("SegmentNo")
 
-wd="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/"
+wd="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1960to1990/"
 write.csv(Flow_accum,paste(wd,'Current_static.csv',sep=''),row.names=F)
 
