@@ -28,7 +28,6 @@ proportion = read.csv(proportion.file,as.is=TRUE) #read in the proportionate dat
 load(data.file)
 stream.data = Runoff #read in the stream data to be summarized
 
-
 #prepare all data
 db = merge(network,proportion[,c(1,4,5)],all=TRUE) #read in proportion rules and merge with network data
 cois=colnames(stream.data)[-grep('SegmentNo',colnames(stream.data))] #define a vector of your colnames of interest
@@ -64,5 +63,5 @@ Flow_accum= aggregate(tdata[,c(2:13)], by = list(tdata$SegmentNo), sum)
 colnames(Flow_accum)[1]=c("SegmentNo")
 
 wd="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/"
-write.csv(out,paste(wd,'Current_dynamic.csv',sep=''),row.names=F)
+write.csv(Flow_accum,paste(wd,'Current_dynamic.csv',sep=''),row.names=F)
 

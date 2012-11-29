@@ -2,34 +2,30 @@
 ###Script to apply corrections to accumulated flow
 
 wd ="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/"
-out.dir = "/home/jc246980/Hydrology.trials/Accumulated_reach/Outputs_corrected/"
+out.dir = "/home/jc246980/Hydrology.trials/Hydrology metrics/Metrics_1976to2005/"
 
 foi=list.files(wd, pattern = "RCP")
 
 current_dynamic=read.csv(paste(wd, "Current_dynamic.csv", sep=''))
 current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
-
+currents=merge(current_static, current_dynamic,by="SegmentNo")
 
 	for (i in foi) {
 
 		tdata=read.csv(paste(wd,i,sep='')) 	# read in future data
-		tdata2=merge(current_static, current_dynamic,by="SegmentNo")
-		tdata2=merge(tdata2, tdata, by="SegmentNo")
-		corrected_dat=(tdata2[,c(2:13)]+1)/((tdata2[,c(26:37)])/(tdata2[,c(14:25)]+1))
-		corrected_dat=cbind(tdata2[,1], corrected_dat)
+		tdata=merge(currents, tdata, by="SegmentNo")
+		corrected_dat=(tdata[,c(2:13)]+1)*((tdata[,c(26:37)])/(tdata[,c(14:25)]+1))
+		corrected_dat=cbind(tdata[,"SegmentNo"], corrected_dat)
+		colnames(corrected_dat)[1] = "SegmentNo"
 		################################################################################
 	
 		#Calculate the annual flow and the coefficient of variation in the monthly and annual flows
 		tdata=corrected_dat
 		co.var<-function(x)(100*sd(x)/mean(x))
-		outmonthcv= apply(tdata,1,FUN=function(x) {co.var(x)})
-		outannualsum= rowSums(tdata)
-		tdata=cbind(tdata, outmonthcv)
-		tdata=cbind(tdata, outannualsum)
-
-		colnames(tdata)[13]=  'monthly_cv'
-		colnames(tdata)[14] = "annual_total"
-
+		tdata$outmonthcv= apply(tdata[,c(2:13)],1,FUN=function(x) {co.var(x)})
+		tdata$outannualsum= rowSums(tdata[,c(2:13)])
+		colnames(tdata)[14]=  'monthly_cv'
+		colnames(tdata)[15] = "annual_total"
 
 		################################################################################
 		#Calculate mean monthly flow for 1, 2 and 3 lowest flow months
@@ -61,13 +57,13 @@ current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
 
 		}
 
-		tempdata= t(apply(tdata[,1:12],1,lowflow))
+		tempdata= t(apply(tdata[,2:13],1,lowflow))
 		tdata=cbind(tdata, tempdata)                       
 
-		colnames(tdata)[15]='lowflow_1_month_mean'
-		colnames(tdata)[16]='lowflow_2_month_mean'
-		colnames(tdata)[17]='lowflow_3_month_mean'
-		colnames(tdata)[18]='driest_6_month%_mean'
+		colnames(tdata)[16]='lowflow_1_month_mean'
+		colnames(tdata)[17]='lowflow_2_month_mean'
+		colnames(tdata)[18]='lowflow_3_month_mean'
+		colnames(tdata)[19]='driest_6_month%_mean'
 
 
 		################################################################################
@@ -92,12 +88,12 @@ current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
 			return(c(Highmonth1, Highmonth2, Highmonth3)) #return the values
 		}
 
-		tempdata= t(apply(tdata[,1:12],1,highflow))	
+		tempdata= t(apply(tdata[,2:13],1,highflow))	
 		tdata=cbind(tdata, tempdata)   
 
-		colnames(tdata)[19]='highflow_1_month_mean'
-		colnames(tdata)[20]='highflow_2_month_mean'
-		colnames(tdata)[21]='highflow_3_month_mean'
+		colnames(tdata)[20]='highflow_1_month_mean'
+		colnames(tdata)[21]='highflow_2_month_mean'
+		colnames(tdata)[22]='highflow_3_month_mean'
 
 
 		################################################################################
@@ -106,11 +102,11 @@ current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
 		zeroflow=NULL
 
 
-			zeronum = apply(tdata[,1:12],1,function(x) {return(length(x[which(x==0)]))}) 
+			zeronum = apply(tdata[,2:13],1,function(x) {return(length(x[which(x==0)]))}) 
 			tdata=cbind(tdata, zeronum)
 			
 
-		colnames(tdata)[22]='zeromonth_no'      
+		colnames(tdata)[23]='zeromonth_no'      
 
 			  
 
@@ -163,22 +159,22 @@ current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
 		}
 
 
-			tempdata= t(apply(tdata[,1:12],1,myfun))
+			tempdata= t(apply(tdata[,2:13],1,myfun))
 			tdata=cbind(tdata,tempdata[,1]); tdata=cbind(tdata, tempdata[,2]); tdata=cbind(tdata,tempdata[,3]); tdata=cbind(tdata,tempdata[,4]); tdata=cbind(tdata,tempdata[,5])
 			
 
-		colnames(tdata)[23]='num.month'
-		colnames(tdata)[24]='total.severity'
-		colnames(tdata)[25]='max.clust.length'
-		colnames(tdata)[26]='clust.severity'
-		colnames(tdata)[27]='month.max.clust'
+		colnames(tdata)[24]='num.month'
+		colnames(tdata)[25]='total.severity'
+		colnames(tdata)[26]='max.clust.length'
+		colnames(tdata)[27]='clust.severity'
+		colnames(tdata)[28]='month.max.clust'
 
-
+		
 		################################################################################
 
 		out.dir = "/home/jc246980/Hydrology.trials/Hydrology metrics/Metrics_1976to2005/"
 
-		write.csv(tdata,paste(out.dir,foi,sep=''),row.names=F)	
+		write.csv(tdata,paste(out.dir,i,sep=''),row.names=F)	
 		################################################################################
 
 
