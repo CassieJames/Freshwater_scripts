@@ -21,14 +21,23 @@ pos250$IBRA = extract.data(cbind(pos250$lon,pos250$lat), tasc)  # extract data f
 
 ####   Read in the river basins, extract for correct locations and append
 
-# tasc = read.asc("/home/jc246980/Zonation/river1.asc")
-# pos250$riverbasin  = extract.data(cbind(pos250$lon,pos250$lat), tasc)  
-# tdata=pos250[which(pos250$IBRA==88),]
-# roi = unique(na.omit(tdata$riverbasin)) # create a vector of all the riverbasins that transect IBRA 88 (AWT)
+tasc = read.asc("/home/jc246980/Zonation/river2.asc")
+pos250$riverbasin  = extract.data(cbind(pos250$lon,pos250$lat), tasc)  
+tdata=pos250[which(pos250$IBRA==88),]
+roi = unique(na.omit(tdata$riverbasin)) # create a vector of all the riverbasins that transect IBRA 88 (AWT)
+roi=roi[-c(1,5,10,13,14)]# remove rivers that are not encompassed by AWT region (these are positions in the vector not riverbasin codes- beware!)
+
+#### Read in species data
+
+species.data = read.csv("/home/jc246980/Species_data/Reach_data/Fish_reach.csv")
+pos250= merge(pos250, species.data, by='SegmentNo')    
+
 
 #### Clip data to min and max row and column numbers
 
-tdata=pos250[which(pos250$IBRA==88),]
+tdata=pos250[which(pos250$riverbasin %in% roi),]
+
+tdata=pos250[which(pos250$IBRA == 88),] # subset by IBRA for the time being
 minrow=min(tdata$row)-1; maxrow=max(tdata$row)+1# work out the max and min row numbers for clipping
 mincol=min(tdata$col)-1; maxcol=max(tdata$col)+1
 
@@ -46,11 +55,12 @@ tdata3$SegmentNo[which(tdata3$col == mincol)] = -999
 tdata3$SegmentNo[which(tdata3$col == maxcol)] = -999
 
 #Create a background ascii - doesn't work as its slightly misaligned!
-# minlat=min(tdata$lat); minlon=min(tdata$lon)
-# bg.asc= as.asc(matrix(rep(-999),722,1513), xll = 144.895, yll =-19.3575 , cellsize = 0.0025)
-# write.asc(bg.asc, "background.asc")
+minlat=min(tdata$lat); minlon=min(tdata$lon)
+bg.asc= as.asc(matrix(rep(-999),722,1513), xll = minlon, yll =minlat , cellsize = 0.0025)
+write.asc(bg.asc, "background.asc")
 
-out.dir="/home/jc246980/Zonation/"; setwd(out.dir)
+
+out.dir="/home/jc246980/Zonation/Species_ascs/"; setwd(out.dir)
 tdata4 = tdata3[,c("lat", "lon", "IBRA", "SegmentNo")]
 dataframe2asc(tdata4)
 
@@ -58,4 +68,3 @@ dataframe2asc(tdata4)
 
 
 
-#### read in species data
