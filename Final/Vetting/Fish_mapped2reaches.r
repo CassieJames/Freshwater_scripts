@@ -40,7 +40,7 @@ species3=list.files(fishadded)
 
 full.list=unique(c(species, species2, species3))
 
-#write.csv(full.list,paste(out.dir,'Fish_full_list.csv',sep=''),row.names=F) # write out full species list to check spelling consistencies
+write.csv(full.list,paste(out.dir,'Fish_full_list.csv',sep=''),row.names=F) # write out full species list to check spelling consistencies
 
 speciesname=gsub('.csv','',full.list)		
 colnames(Fish_data)=c("SegmentNo", speciesname)
