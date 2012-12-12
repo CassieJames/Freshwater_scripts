@@ -42,14 +42,14 @@ load(paste(out.dir,'Zonation_basic_info.Rdata',sep=''))
 tdata=pos250[which(pos250$riverbasin %in% roi),] # Clip dataset to riverbasins of interest (roi)
 
 minrow=(min(tdata$row))-1; maxrow=(max(tdata$row))+1# work out the max and min row numbers of clip and expand by 1
-mincol=(min(tdata$col))-1; maxcol=(max(tdata$col))-1
+mincol=(min(tdata$col))-1; maxcol=(max(tdata$col))+1
 
 tdata3=pos250[which(pos250$row<=maxrow & pos250$row>=minrow & pos250$col<=maxcol & pos250$col>=mincol),] # clip data to size
 
-# tdata3$SegmentNo[which(tdata3$row == minrow)] = -9999
-# tdata3$SegmentNo[which(tdata3$row == maxrow)] = -9999
-# tdata3$SegmentNo[which(tdata3$col == mincol)] = -9999
-# tdata3$SegmentNo[which(tdata3$col == maxcol)] = -9999
+tdata3$SegmentNo[which(tdata3$row == minrow)] = -9999
+tdata3$SegmentNo[which(tdata3$row == maxrow)] = -9999
+tdata3$SegmentNo[which(tdata3$col == mincol)] = -9999
+tdata3$SegmentNo[which(tdata3$col == maxcol)] = -9999
 
 out.dir="/home/jc246980/Zonation/"; setwd(out.dir)
 tdata4 = tdata3[,c("lat", "lon","SegmentNo")] # save out planning unit file (SegmentNo) 
