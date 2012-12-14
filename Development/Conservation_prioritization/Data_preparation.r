@@ -73,6 +73,8 @@ spdata=cbind(spdata,tdata5[,1:7])
 		colnames(temp) = c("SegmentNo","row", "col","lat", "lon","IBRA", "riverbasin","species")
 		temp$species[which(temp$SegmentNo==-9999)] = -9999 	 		# replace all NAs in species data where Segmentno is -9999 
 		temp$species[which(temp$species==0)] = -9999		 		# replace all 0's with -999
+		temp$species[which(temp$species==0)] = -9999
+		temp$species[which(temp$species=="NA")] = -9999				# Nas were generated with the merge command where there were Segment numbers in tdata3 that were not in the species file
 		temp$species[which(temp$species==2)] = 1				 	# Where I have aggregated segments I have generated '2' if a species is recorded in both segments - change all theses to '1'
 		temp$species[which(temp$row == minrow)] = -9999 	 		# replace all buffer values around square with -9999
 		temp$species[which(temp$row == maxrow)] = -9999
@@ -83,13 +85,16 @@ spdata=cbind(spdata,tdata5[,1:7])
 	
 colnames(spdata) = colnames(tdata5)	
 
+unique(spdata[,21])
+
 out.dir="/home/jc246980/Zonation/"
 save(spdata,file=paste(out.dir,'Zonation_Fish_AWT.Rdata',sep=''))     # save out file incase it crashes again
 
 out.dir="/home/jc246980/Zonation/"; setwd(out.dir)
 load(paste(out.dir,'Zonation_Fish_AWT.Rdata',sep=''))		# read in file
 
-spdata_temp = spdata[,c(4,5,8,9,10,11,12,13,14,15,16,17)] # create fish asc files for trials
+out.dir="/home/jc246980/Zonation/Species.asc/"; setwd(out.dir)
+spdata_temp = spdata[,-c(1,2,3,6,7)] # create fish asc files
 dataframe2asc(spdata_temp)
 
 ########################################################################################
