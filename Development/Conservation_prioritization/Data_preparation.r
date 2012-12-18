@@ -74,7 +74,7 @@ spdata=cbind(spdata,tdata5[,1:7])
 		temp$species[which(temp$SegmentNo==-9999)] = -9999 	 		# replace all NAs in species data where Segmentno is -9999 
 		temp$species[which(temp$species==0)] = -9999		 		# replace all 0's with -999
 		temp$species[which(temp$species==0)] = -9999
-		temp$species[which(temp$species=="NA")] = -9999				# Nas were generated with the merge command where there were Segment numbers in tdata3 that were not in the species file
+		temp$species[which(is.na(temp$species))] = -9999				# Nas were generated with the merge command where there were Segment numbers in tdata3 that were not in the species file
 		temp$species[which(temp$species==2)] = 1				 	# Where I have aggregated segments I have generated '2' if a species is recorded in both segments - change all theses to '1'
 		temp$species[which(temp$row == minrow)] = -9999 	 		# replace all buffer values around square with -9999
 		temp$species[which(temp$row == maxrow)] = -9999
@@ -84,8 +84,6 @@ spdata=cbind(spdata,tdata5[,1:7])
 	}
 	
 colnames(spdata) = colnames(tdata5)	
-
-unique(spdata[,21])
 
 out.dir="/home/jc246980/Zonation/"
 save(spdata,file=paste(out.dir,'Zonation_Fish_AWT.Rdata',sep=''))     # save out file incase it crashes again
@@ -167,18 +165,19 @@ write.csv(connect3,paste(out.dir,"Connections.csv",sep=''),row.names=F)
 ###################################################################################################
 ### Create mask for analysis that limits extent to roi
 
-out.dir="/home/jc246980/Zonation/"
+out.dir="/home/jc246980/Zonation/"; setwd(out.dir)
 load(paste(out.dir,'Zonation_basic_info.Rdata',sep=''))
-roi=c(49,58,61,62,64,71,73,77,66) 									# riverbasins of interest
-tdata=pos250[which(pos250$riverbasin %in% roi),] 					# Clip dataset to riverbasins of interest (roi)
+roi=read.dbf("/home/jc246980/Zonation/ROI.dbf")# riverbasins of interest (determined via manual selection in arcgis using lasoo feature selection and saving as a dataframe)
+								
+tdata=pos250[which(pos250$SegmentNo %in% roi$SegmentNo),] 					# Clip dataset to riverbasins of interest (roi)
 minrow=min(tdata$row)-1; maxrow=max(tdata$row)+1					# work out the max and min row numbers of clip and expand by 1
 mincol=min(tdata$col)-1; maxcol=max(tdata$col)+1
 tdata3=pos250[which(pos250$row<=maxrow & pos250$row>=minrow & pos250$col<=maxcol & pos250$col>=mincol),] # clip data to size
 
-RB=tdata3[, c(3,4,7)]
+RB=tdata3[, c(3,4,5)]
 colnames(RB)[3] = "mask"
-RB$mask[which(!(RB$mask %in% roi))] = -9999	
-RB$mask[which(RB$mask %in% roi)] = 1	
+RB$mask[which(!(RB$mask %in% roi$SegmentNo))] = -9999	
+RB$mask[which(RB$mask %in% roi$SegmentNo)] = 1	
 dataframe2asc(RB)
 
 
