@@ -167,17 +167,28 @@ write.csv(connect3,paste(out.dir,"Connections.csv",sep=''),row.names=F)
 
 out.dir="/home/jc246980/Zonation/"; setwd(out.dir)
 load(paste(out.dir,'Zonation_basic_info.Rdata',sep=''))
-roi=read.dbf("/home/jc246980/Zonation/ROI.dbf")# riverbasins of interest (determined via manual selection in arcgis using lasoo feature selection and saving as a dataframe)
+roi=c(49,58,61,62,64,71,73,77,66) 	
 								
-tdata=pos250[which(pos250$SegmentNo %in% roi$SegmentNo),] 					# Clip dataset to riverbasins of interest (roi)
+tdata=pos250[which(pos250$riverbasin %in% roi),] 					# Clip dataset to riverbasins of interest (roi)
 minrow=min(tdata$row)-1; maxrow=max(tdata$row)+1					# work out the max and min row numbers of clip and expand by 1
 mincol=min(tdata$col)-1; maxcol=max(tdata$col)+1
 tdata3=pos250[which(pos250$row<=maxrow & pos250$row>=minrow & pos250$col<=maxcol & pos250$col>=mincol),] # clip data to size
 
+roi=read.dbf("/home/jc246980/Zonation/ROI.dbf")# riverbasins of interest (determined via manual selection in arcgis using lasoo feature selection and saving as a dataframe)
+roi=roi[, c("SegmentNo")]
+missing_segs=c(238734,242640,242436,242439,239134,236623,243090,242356,242547,239811,236496,235362,239629,242770,217765,201439,1416876,1416887,
+1416888,1416893,1416922,1416929,1416933, 1416939,1416947,1416950, 1416963,1416997,1417015,1417042, 1417055,1417084,1417104,1417153,1417175,1417200,
+1417189, 1417247,1417264, 1417289, 1417301, 1417335, 1417371, 1417384, 1417388, 1417493, 1417511, 1417525, 1417558, 1417572, 1417580, 1417652, 1417658,
+1417686, 1417754, 1417788, 1417807, 1417959, 1418141, 1418811, 23391, 23420, 1424304, 1424294, 1424150, 1424163, 1424175, 19626, 255985, 256019, 1423888,
+1423872, 1423839, 1423789, 250062, 1423271, 1423269, 245819, 1422960,18790,1422939, 1421541, 1421584, 218653, 218218, 1421462, 1421463, 142164, 1421482, 
+218057, 1421502, 218610, 1421585, 1421586,1421556, 1421548, 1421549, 218305, 1420942, 1420957, 1420986, 1421004, 1421016, 245847, 245910, 1417115,1417407,
+1424194, 1424189, 1424182, 1424098, 1423853, 1423860, 1423870, 1423874, 1423873, 1423876, 251407, 1423726, 1423476, 1421640, 1421464, 1421482, 1421540)
+roi=c(roi, missing_segs)
+
 RB=tdata3[, c(3,4,5)]
 colnames(RB)[3] = "mask"
-RB$mask[which(!(RB$mask %in% roi$SegmentNo))] = -9999	
-RB$mask[which(RB$mask %in% roi$SegmentNo)] = 1	
+RB$mask[which(!(RB$mask %in% roi))] = -9999	
+RB$mask[which(RB$mask %in% roi)] = 1	
 dataframe2asc(RB)
 
 

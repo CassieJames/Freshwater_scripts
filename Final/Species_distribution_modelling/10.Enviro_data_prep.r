@@ -42,9 +42,11 @@ YEAR=seq(2015, 2085, 10)
 				Hydro_missing=Runoff_local[which(!(Runoff_local$SegmentNo %in% Accum_flow$SegmentNo)),]   
 				ANNUAL_MEAN=rbind(Accum_flow, Hydro_missing)
 	
-				cois= c(1,grep(yy,names(bioclim.dat)))#columns of interest plus SegmentNo
+				cois= c(1,grep(yy,names(bioclim.dat)))#years of interest plus SegmentNo
 				bioclim=bioclim.dat[,cois]
-				
+				vars = c('SegmentNo',paste('bioclim_',sprintf('%02i',c(1,4,5,6,12,15,16,17)),sep=''))
+				bioclim=bioclim.dat[,vars]
+								
 				Enviro_dat=merge(bioclim, ANNUAL_MEAN, by="SegmentNo", all.x=TRUE)
 				write.csv(Enviro_dat,paste(out.dir,es,"_",gcm,"_",yy,".csv",sep=''),row.names=F)	
 			}
