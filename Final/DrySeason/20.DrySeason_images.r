@@ -4,6 +4,10 @@
 module load R-2.15.1
 library(plotrix) 
 library(SDMTools)
+
+
+
+
 base.asc = read.asc.gz('base.asc.gz') #read in the base asc file
 pos = read.csv('base.positions.csv',as.is=TRUE)
 all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(21)#colorRampPalette(c('red4','orangered','gold','beige','tan','lightblue4','blue4'))(21) #define a set of colors

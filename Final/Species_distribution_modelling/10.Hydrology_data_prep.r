@@ -9,7 +9,6 @@ library(SDMTools)
 futdir = "/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"	
 accum.dir = "/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/"
 runoff.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/"
-bioclim.dir ="/home/jc246980/Climate/5km/Future/Bioclim_reach/"
 out.dir ="/home/jc246980/SDM/Environmental_future/Hydrology/"
 
 wd ="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/"
@@ -20,7 +19,8 @@ currents=merge(current_static, current_dynamic,by="SegmentNo")
 
 ESs = list.files(futdir, pattern="RCP") 										# list the emission scenarios
 GCMs = list.files(paste(futdir,ESs[1],sep=''))									# get a list of GCMs
-YEAR=seq(2015, 2085, 10)	
+YEAR=seq(2015, 2085, 10)
+	
 
 	for (es in ESs) {
 		for (gcm in GCMs) {
