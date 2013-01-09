@@ -13,7 +13,6 @@ setwd(sh.dir)
 
 for(es in ESs) { 
 	for(gcm in GCMs) {		
-		
 		##create the sh file
 		zz = file(paste('30.',es,'.',gcm,'.aggregate.sh',sep=''),'w')
 			 cat('#!/bin/bash\n',file=zz)
@@ -22,8 +21,7 @@ for(es in ESs) {
 		close(zz) 
 
 		##submit the script
-		system(paste('qsub -m n -l nodes=2 30.',es,'.',gcm,'.aggregate.sh',sep=''))
+		system(paste('qsub -l nodes=1:ppn=24 30.',es,'.',gcm,'.aggregate.sh',sep=''))
+
 	}
 }	
-
-	

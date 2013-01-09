@@ -1,14 +1,14 @@
 ################################################################################
 # Script to aggregate dry season severity variables generated at 5km resolution onto Janets reaches for futures
 # C. James 20th November 2012
-
+args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) }
 library(SDMTools) #load the necessary library
+YEAR=seq(2015, 2085, 10)
+### check if file exists
+tfile=paste(out.dir,es,"_",gcm,"_",voi,".csv",sep='')
+if (file.exists(tfile)) {
+} else {
 
-### trial run info
-
-voi='num_month'
-es='RCP3PD'
-gcm='cccma-cgcm31'
 
 ###Get necessary files
 
@@ -27,7 +27,7 @@ load('/home/jc246980/Hydrology.trials/Aggregate_reach/Area_agg_weights.Rdata') #
 	gcmoi = tdata[,cois]	# subset data by gcm				
 	gcm_location=cbind(tpos, gcmoi)	# append location information and identifier - not generated as part of the dry season myfun scripts or JV's orginal precip data
 				
-	for (i in 6:ncol(gcm_location)) {
+	for (i in 6:ncol(gcm_location)) { cat(i,'\n')
 	
 		Merged<- merge(Reach_area_agg, gcm_location[,c(5,i)], by='UID')         # Merge Area_agg with 5km pos file                            
 		Merged$weighted_data=Merged[,6]*Merged$weights
@@ -46,7 +46,7 @@ load('/home/jc246980/Hydrology.trials/Aggregate_reach/Area_agg_weights.Rdata') #
 	colnames(Dry_metrics)=tt
 	write.csv(Dry_metrics,paste(out.dir,es,"_",gcm,"_",voi,".csv",sep=''),row.names=F)	
 			
-			
+}		
 
 		
 		
