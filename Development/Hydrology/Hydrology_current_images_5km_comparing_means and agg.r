@@ -206,7 +206,7 @@ png(paste(data.dir,'/Annuals_teng_cats.png',sep=''),width=dim(base.asc)[1]*2/100
 dev.off()  
 
 ################################################################################
-# Plot showing dynamic budyko output for aggregated means over 30 years
+# Plot showing static budyko output for aggregated means over 30 years
 
 library(SDMTools) #load the necessary library
 base.asc = read.asc.gz('/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05/base.asc.gz') #read in the base asc file

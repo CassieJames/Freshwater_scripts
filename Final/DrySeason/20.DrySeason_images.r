@@ -22,7 +22,7 @@ futdir = "/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
 
 ESs = list.files(futdir, pattern="RCP") 	
 YOIS=seq(2015,2085,10)
-VOIS = c('delta.num.month', 'delta.total.severity', 'delta.max.clust.length', 'delta.clust.severity')
+VOIS = c('delta_num_month', 'delta_total_severity', 'delta_max_clust_length', 'delta_fut_clust_severity', 'delta_month_max_clust')
 
 
 	
@@ -38,7 +38,8 @@ VOIS = c('delta.num.month', 'delta.total.severity', 'delta.max.clust.length', 'd
 					deltalim_x=round(range(outdelta)[1],1)
 					deltalim_y=round(range(outdelta)[2],1)
 					deltalims=c(deltalim_x,deltalim_y)
-					deltalabs = c(paste('<',deltalims[1]),2.5,paste('>',deltalims[2]))
+					deltamid=round(((deltalims[1]+deltalims[2])/2),1)
+					deltalabs = c(paste('<',deltalims[1]),deltamid,paste('>',deltalims[2]))
 					
 					for (percentile in c(10,50,90)) { cat(percentile,'\n') #cycle through the percentiles
 						for (es in ESs) { cat(es,'\n') #cycle through the emission scenarios of interst
@@ -50,20 +51,20 @@ VOIS = c('delta.num.month', 'delta.total.severity', 'delta.max.clust.length', 'd
 						}
 					}
 					mtext(ESs,side=3,line=1,outer=TRUE,cex=2,at=seq(1/8,0.99,1/4))
-					if (voi_delta =='delta.num.month') {
-						mtext(paste(year,'--Change in length of dry season'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_delta =='delta_num_month') {
+						mtext(paste(year,'-- Change in length of dry season'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_delta =='delta.total.severity') {
-						mtext(paste(year,'--Proportionate change in total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_delta =='delta_total_severity') {
+						mtext(paste(year,'-- Proportionate change in total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_delta =='delta.max.clust.length') {
-						mtext(paste(year,'--Change in length of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_delta =='delta_max_clust_length') {
+						mtext(paste(year,'-- Change in length of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_delta =='delta.clust.severity') {
-						mtext(paste(year,'--Proportionate change in severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_delta =='delta_fut_clust_severity') {
+						mtext(paste(year,'-- Proportionate change in severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					}
-					if (voi_delta =='delta.month.max.clust') {
-						mtext(paste(year,'--Change month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_delta =='delta_month_max_clust') {
+						mtext(paste(year,'-- Change month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
 					}
 					mtext(c('90th','50th','10th'),side=2,line=1,outer=TRUE,cex=2,at=seq(1/6,0.99,1/3))
 				dev.off() #close out the image
@@ -74,7 +75,7 @@ VOIS = c('delta.num.month', 'delta.total.severity', 'delta.max.clust.length', 'd
 	
 	
 data.dir="/home/jc246980/DrySeason/Futuredat/Quantiles_sd/"
-VOIS = c('sd.num.month', 'sd.total.severity', 'sd.max.clust.length', 'sd.clust.severity', 'sd.month.max.clust')
+VOIS = c('sd_num_month', 'sd_total_severity', 'sd_max_clust_length', 'sd_fut_clust_severity', 'sd_month_max_clust')
 
 	for (voi_sd in VOIS) { cat(voi_sd,'\n')	
 
@@ -84,11 +85,12 @@ VOIS = c('sd.num.month', 'sd.total.severity', 'sd.max.clust.length', 'sd.clust.s
 					par(mar=c(0,0,0,0),mfrow=c(3,4),cex=1,oma=c(3,3,3,0)) #define the plot parameters
 					first=TRUE
 										
-					load(paste(data.dir,voi_sd,"_SD.Rdata",sep='')) #loads dry season metrics
+					load(paste(data.dir,voi_sd,"_sd.Rdata",sep='')) #loads dry season metrics
 					sdlim_x=round(range(outsd)[1],1)
 					sdlim_y=round(range(outsd)[2],1)
-					sdlims=c(deltalim_x,deltalim_y)
-					sdlabs = c(paste('<',sdlims[1]),2.5,paste('>',sdlims[2]))
+					sdlims=c(sdlim_x,sdlim_y)
+					sdmid=round(((sdlims[1]+sdlims[2])/2),1)
+					sdlabs = c(paste('<',sdlims[1]),sdmid,paste('>',sdlims[2]))
 					
 					for (percentile in c(10,50,90)) { cat(percentile,'\n') #cycle through the percentiles
 						for (es in ESs) { cat(es,'\n') #cycle through the emission scenarios of interst
@@ -100,20 +102,20 @@ VOIS = c('sd.num.month', 'sd.total.severity', 'sd.max.clust.length', 'sd.clust.s
 						}
 					}
 					mtext(ESs,side=3,line=1,outer=TRUE,cex=2,at=seq(1/8,0.99,1/4))
-					if (voi_sd =='sd.num.month') {
-						mtext(paste(year,'--Number of sd from current length of dry season'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_sd =='sd_num_month') {
+						mtext(paste(year,'-- Number of sd from current length of dry season'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.total.severity') {
-						mtext(paste(year,'--Number of sd from current total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_sd =='sd_total_severity') {
+						mtext(paste(year,'-- Number of sd from current total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.max.clust.length') {
-						mtext(paste(year,'--Number of sd from current longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_sd =='sd_max_clust_length') {
+						mtext(paste(year,'-- Number of sd from current longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.clust.severity') {
-						mtext(paste(year,'--Number of sd from current severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_sd =='sd_fut_clust_severity') {
+						mtext(paste(year,'-- Number of sd from current severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					}
-					if (voi_sd =='sd.month.max.clust') {
-						mtext(paste(year,'--Number of sd from current month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_sd =='sd_month_max_clust') {
+						mtext(paste(year,'-- Number of sd from current month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
 					}
 					mtext(c('90th','50th','10th'),side=2,line=1,outer=TRUE,cex=2,at=seq(1/6,0.99,1/3))
 				dev.off() #close out the image
@@ -123,46 +125,47 @@ VOIS = c('sd.num.month', 'sd.total.severity', 'sd.max.clust.length', 'sd.clust.s
 	
 	
 data.dir="/home/jc246980/DrySeason/Futuredat/Quantiles_data/"
-VOIS = c('sd.num.month', 'sd.total.severity', 'sd.max.clust.length', 'sd.clust.severity', 'sd.month.max.clust')
+VOIS = c('num_month', 'total_severity', 'max_clust_length', 'fut_clust_severity', 'fut_month_max_clust')
 
-	for (voi_sd in VOIS) { cat(voi_sd,'\n')	
+	for (voi_data in VOIS) { cat(voi_data,'\n')	
 
 		 for (year in YOIS) { cat(year,'\n') #cycle through each of the years
 					
-				png(paste(image.dir,voi_sd,'.',year,'.png',sep=''),width=dim(base.asc)[1]*4+30, height=dim(base.asc)[2]*3+60, units='px', pointsize=20, bg='lightgrey')
+				png(paste(image.dir,voi_data,'.',year,'.png',sep=''),width=dim(base.asc)[1]*4+30, height=dim(base.asc)[2]*3+60, units='px', pointsize=20, bg='lightgrey')
 					par(mar=c(0,0,0,0),mfrow=c(3,4),cex=1,oma=c(3,3,3,0)) #define the plot parameters
 					first=TRUE
 										
-					load(paste(data.dir,voi_sd,"_SD.Rdata",sep='')) #loads dry season metrics
-					sdlim_x=round(range(outsd)[1],1)
-					sdlim_y=round(range(outsd)[2],1)
-					sdlims=c(deltalim_x,deltalim_y)
-					sdlabs = c(paste('<',sdlims[1]),2.5,paste('>',sdlims[2]))
+					load(paste(data.dir,voi_data,"_data.Rdata",sep='')) #loads dry season metrics
+					datalim_x=round(range(outdata)[1],1)
+					datalim_y=round(range(outdata)[2],1)
+					datalims=c(datalim_x,datalim_y)
+					datamid=round(((datalims[1]+datalims[2])/2),1)
+					datalabs = c(paste('<',datalims[1]),datamid,paste('>',datalims[2]))
 					
 					for (percentile in c(10,50,90)) { cat(percentile,'\n') #cycle through the percentiles
 						for (es in ESs) { cat(es,'\n') #cycle through the emission scenarios of interst
 							##plot the delta
-							tasc = base.asc; tasc[cbind(pos$row,pos$col)] = outsd[,paste(es,year,percentile,sep='_')] #get the data
-							tasc[which(tasc<sdlims[1])] = sdlims[1]; tasc[which(tasc>sdlims[2])] = sdlims[2] #ensure all data within limits
-							image(tasc,ann=FALSE,axes=FALSE,zlim=sdlims,col=cols) #create the image
-							if (percentile==90 & es==ESs[length(ESs)]) color.legend(118,-44,140,-41,sdlabs,cols,cex=2)
+							tasc = base.asc; tasc[cbind(pos$row,pos$col)] = outdata[,paste(es,year,percentile,sep='_')] #get the data
+							tasc[which(tasc<datalims[1])] = datalims[1]; tasc[which(tasc>datalims[2])] = datalims[2] #ensure all data within limits
+							image(tasc,ann=FALSE,axes=FALSE,zlim=datalims,col=cols) #create the image
+							if (percentile==90 & es==ESs[length(ESs)]) color.legend(118,-44,140,-41,datalabs,cols,cex=2)
 						}
 					}
 					mtext(ESs,side=3,line=1,outer=TRUE,cex=2,at=seq(1/8,0.99,1/4))
-					if (voi_sd =='sd.num.month') {
-						mtext(paste(year,'--Number of sd from current length of dry season'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_data =='num_month') {
+						mtext(paste(year,'-- Length of dry season'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.total.severity') {
-						mtext(paste(year,'--Number of sd from current total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_data =='total_severity') {
+						mtext(paste(year,'-- Total dry season severity'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.max.clust.length') {
-						mtext(paste(year,'--Number of sd from current longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_data =='max_clust_length') {
+						mtext(paste(year,'-- Longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					} 
-					if (voi_sd =='sd.clust.severity') {
-						mtext(paste(year,'--Number of sd from current severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_data =='fut_clust_severity') {
+						mtext(paste(year,'-- Severity of longest consecutive dry period'),side=1,line=1,outer=TRUE,cex=3)
 					}
-					if (voi_sd =='sd.month.max.clust') {
-						mtext(paste(year,'--Number of sd from current month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
+					if (voi_data =='fut_month_max_clust') {
+						mtext(paste(year,'-- Month when longest consecutive dry period began'),side=1,line=1,outer=TRUE,cex=3)
 					}
 					mtext(c('90th','50th','10th'),side=2,line=1,outer=TRUE,cex=2,at=seq(1/6,0.99,1/3))
 				dev.off() #close out the image
