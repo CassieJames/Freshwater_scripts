@@ -60,8 +60,7 @@ colnames(Fish_data)=c("SegmentNo", speciesname)
 				species.data.latdec=species.data.ala$LATDEC
 				species.data.longdec=species.data.ala$LONGDEC
 		}
-		
-		
+			
 		if(file.exists(paste(fishatlas.dir,"/", full.list[sp],sep=''))){
 				species.data.db=read.csv(paste(fishatlas.dir,"/",full.list[sp],sep=''))
 				species.data.latdec=species.data.db$LATITUDE

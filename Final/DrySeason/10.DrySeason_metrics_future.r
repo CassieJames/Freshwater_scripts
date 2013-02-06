@@ -100,7 +100,7 @@ for (es in ESs){
                       sd.clust.severity[,intersect(grep(yy,colnames(sd.clust.severity)),grep(gcm,colnames(sd.clust.severity)))]=(fut.clust.severity[,intersect(grep(yy,colnames(fut.clust.severity)),grep(gcm,colnames(fut.clust.severity)))]-clust.severity[,31])/clust.severity[,32]+0.000001
 
                       delta.month.max.clust[,intersect(grep(yy,colnames(delta.month.max.clust)),grep(gcm,colnames(delta.month.max.clust)))]=fut.month.max.clust[,intersect(grep(yy,colnames(fut.month.max.clust)),grep(gcm,colnames(fut.month.max.clust)))]-month.max.clust[,31]
-                      sd.month.max.clust[,intersect(grep(yy,colnames(sd.month.max.clust)),grep(gcm,colnames(sd.month.max.clust)))]=(fut.clust.severity[,intersect(grep(yy,colnames(fut.month.max.clust)),grep(gcm,colnames(fut.month.max.clust)))]-month.max.clust[,31])/month.max.clust[,32]+0.000001
+                      sd.month.max.clust[,intersect(grep(yy,colnames(sd.month.max.clust)),grep(gcm,colnames(sd.month.max.clust)))]=(fut.month.max.clust[,intersect(grep(yy,colnames(fut.month.max.clust)),grep(gcm,colnames(fut.month.max.clust)))]-month.max.clust[,31])/month.max.clust[,32]+0.000001
                       }
 
                 }

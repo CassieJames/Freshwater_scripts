@@ -10,10 +10,10 @@ bioclim=read.csv("/home/jc246980/Climate/5km/Future/Bioclim_reach/Current_biocli
 dryseason.dir="/home/jc246980/DrySeason/DrySeason_reach/"
 VOIS=c("num.month", "total.severity", "max.clust.length","clust.severity", "month.max.clust")
 
-### Create annual means and fill in accumulated flow gaps
+### Create annual sums and fill in accumulated flow gaps
 
-hydro$MeanAnnual=rowMeans(hydro[,2:13])
-Runoff$MeanAnnual=rowMeans(Runoff[,2:13])
+hydro$SumAnnual=rowSums(hydro[,2:13])
+Runoff$SumAnnual=rowSums(Runoff[,2:13])
 hydro_extra=Runoff[which(!(Runoff$SegmentNo %in% hydro$SegmentNo)),]   
 HYDRO=hydro[,c(1,14)]
 HYDRO_EXTRA=hydro_extra[, c(1,14)]

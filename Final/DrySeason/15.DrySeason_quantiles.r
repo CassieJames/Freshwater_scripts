@@ -5,17 +5,33 @@
 library(SDMTools)
 
 out.dir ="/home/jc246980/DrySeason/Futuredat/"
-#load deltas and standard deviations
-
-future.dir='/home/jc165798/working/NARP_stability/OZ_5km/data/monthly/pre/'
-files=list.files(future.dir, pattern='RCP')
-ESs = unlist(strsplit(files,"_")); ESs = unique(ESs[seq(1,length(ESs),2)])#list the emission scenarios
+futdir = "/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"	
+ESs = list.files(futdir, pattern="RCP") 	
 YOIS=seq(2015,2085,10)
 
 
-vois_files=c("delta_num_month.Rdata","delta_total_severity.Rdata","delta_max_clust_length.Rdata", "delta_fut_clust_severity.Rdata","delta_fut_month_max_clust.Rdata", "sd_num_month.Rdata","sd_total_severity.Rdata","sd_max_clust_length.Rdata", "sd_fut_clust_severity.Rdata","sd_month_max_clust.Rdata")
-vois_delta = c("delta.num.month","delta.total.severity","delta.max.clust.length","delta.clust.severity", "delta.month.max.clust")
-vois_sd = c("sd.num.month","sd.total.severity","sd.max.clust.length","sd.clust.severity", "sd.month.max.clust")
+vois_data=c("num_month","total_severity","max_clust_length", "fut_clust_severity","fut_month_max_clust")
+vois_delta = c("delta_num_month","delta_total_severity","delta_max_clust_length","delta_fut_clust_severity", "delta_month_max_clust")
+vois_sd = c("sd_num_month","sd_total_severity","sd_max_clust_length","sd_fut_clust_severity", "sd_month_max_clust")
+
+
+################################################################################
+# calculate quantiles across years and gcms for data
+
+  for (ii in 1:5) { cat(vois_data[ii],'\n')
+      outdata = matrix(NA,nrow=286244,ncol=3*length(ESs)*length(YOIS)); #define the output matrix
+  	  tt = expand.grid(c(10,50,90),YOIS,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdata) = tt #add the column names
+            for (es in ESs) {
+                  tdata=load(paste(out.dir,"Data/",es,"_",vois_data[ii],".Rdata", sep=''))
+                  tdata = get(tdata)
+                         for (year in YOIS) {
+                                     outquant = t(apply(tdata[,grep(year,colnames(tdata))],1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
+            		                     outdata[,intersect(grep(year,colnames(outdata)),grep(es,colnames(outdata)))] = outquant[,] #copy out the data
+                       }
+             }
+      save(outdata,file=paste(out.dir,"Quantiles_data/",vois_data[ii],"_data.Rdata",sep=''))
+
+  }
 
 
 ################################################################################
@@ -25,8 +41,8 @@ vois_sd = c("sd.num.month","sd.total.severity","sd.max.clust.length","sd.clust.s
       outdelta = matrix(NA,nrow=286244,ncol=3*length(ESs)*length(YOIS)); #define the output matrix
   	  tt = expand.grid(c(10,50,90),YOIS,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt #add the column names
             for (es in ESs) {
-                  load(paste(out.dir,"Delta/",es,"_",vois_files[ii], sep=''))
-                  tdata = get(vois_delta[ii])
+                  tdata=load(paste(out.dir,"Delta/",es,"_",vois_delta[ii],".Rdata", sep=''))
+                  tdata = get(tdata)
                          for (year in YOIS) {
                                      outquant = t(apply(tdata[,grep(year,colnames(tdata))],1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
             		                     outdelta[,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
@@ -40,17 +56,18 @@ vois_sd = c("sd.num.month","sd.total.severity","sd.max.clust.length","sd.clust.s
 
   for (ii in 1:5) { cat(vois_sd[ii],'\n')
       outsd = matrix(NA,nrow=286244,ncol=3*length(ESs)*length(YOIS)); #define the output matrix
-  	  tt = expand.grid(c(10,50,90),YOIS,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt #add the column names
+  	  tt = expand.grid(c(10,50,90),YOIS,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outsd) = tt #add the column names
             for (es in ESs) {
-                  load(paste(out.dir,"Delta/",es,"_",vois_files[ii], sep=''))
-                  tdata = get(vois_sd[ii])
+                  tdata=load(paste(out.dir,"SD/",es,"_",vois_sd[ii],".Rdata", sep=''))
+                  tdata = get(tdata)
                          for (year in YOIS) {
-                                     outquant = t(apply(tdata[,grep(year,colnames(tdata))],1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
-            		                     outsd[,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
+                             outquant = t(apply(tdata[,grep(year,colnames(tdata))],1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
+            		         outsd[,intersect(grep(year,colnames(outsd)),grep(es,colnames(outsd)))] = outquant[,] #copy out the data
                        }
              }
-      save(outdelta,file=paste(out.dir,"Quantiles_sd/",vois_sd[ii],"_sd.Rdata",sep=''))
+      save(outsd,file=paste(out.dir,"Quantiles_sd/",vois_sd[ii],"_sd.Rdata",sep=''))
 
   }
   
 ################################################################################
+load(paste(out.dir,"Quantiles_sd/","sd_num_month_sd.Rdata",sep=''))

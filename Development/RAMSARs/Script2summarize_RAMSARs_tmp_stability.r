@@ -22,9 +22,8 @@ stability.dir ="/home/jc165798/working/NARP_hydro/stability/OZ_5km/percent_sd/"
 
 ###Load RAMSAR data
 
-RAMasc = read.asc("/home/jc246980/RAMSAR/RAMSAR.asc") # load ramsar  asc
+RAMasc = read.asc("/home/jc246980/RAMSAR/ramsar_wetlands_for_download.asc") # load ramsar  asc
 RAMinfo = read.dbf('/home/jc246980/RAMSAR/RAMSAR_info.dbf')
-
 pos$RAMSAR  = extract.data(cbind(pos$lon,pos$lat), RAMasc)    
 
 ####Run through stability for mean temperature

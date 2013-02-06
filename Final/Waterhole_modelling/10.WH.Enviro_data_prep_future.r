@@ -18,7 +18,7 @@ wd ="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accum
 
 current_dynamic=read.csv(paste(wd, "Current_dynamic.csv", sep=''))
 current_static=read.csv(paste(wd, "Current_static.csv", sep=''))
-currents=merge(current_dynamic, current_static,by="SegmentNo")
+currents=merge(current_static, current_dynamic,by="SegmentNo")
 
 ESs = list.files(futdir, pattern="RCP") 										# list the emission scenarios
 GCMs = list.files(paste(futdir,ESs[1],sep=''))									# get a list of GCMs

@@ -65,5 +65,5 @@ Flow_accum= aggregate(tdata[,c(2:13)], by = list(tdata$SegmentNo), sum)
 colnames(Flow_accum)[1]=c("SegmentNo")
 
 wd="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1960to1990/"
-write.csv(out,paste(wd,'Current_dynamic.csv',sep=''),row.names=F)
+write.csv(Flow_accum,paste(wd,'Current_dynamic.csv',sep=''),row.names=F)
 

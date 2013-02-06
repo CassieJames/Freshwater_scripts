@@ -37,7 +37,6 @@ colnames(Frog_data)=c("SegmentNo", speciesname)
 		}	
 
 	write.csv(Frog_data,paste(out.dir,'Frog_reach.csv',sep=''),row.names=F)
-
-
-
+#write out Frog list
+write.csv(species,paste(out.dir,'Full_Frog_list.csv',sep=''),row.names=F)
 
