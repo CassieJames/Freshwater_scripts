@@ -8,6 +8,11 @@
 args=(commandArgs(TRUE)) #get the command line arguements
 for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #evaluate the arguments
 
+##check if file exists
+filename=gsub('.Rdata','',tfile)
+
+if(file.exists(paste(out.dir,filename,'.',yr,'.csv',sep=''))){
+}else{
 ### sample data 
 proportionate.accumulation=TRUE #false is accumulate area; true is accumulation runnoff
 wd = "/home/jc165798/working/NARP_hydro/flow_accumulation/" #define the working directory
@@ -58,6 +63,6 @@ db2 = merge(db[,c('HydroID','SegmentNo')],out,by='HydroID') #merge this back int
 
 out=aggregate(db2[,cois], by = list(db2$SegmentNo), sum)
 colnames(out)[1]='SegmentNo'
-filename=gsub('.Rdata','',tfile)
-write.csv(out,paste(out.dir,filename,'.',yr,'.csv',sep=''),row.names=F)
 
+write.csv(out,paste(out.dir,filename,'.',yr,'.csv',sep=''),row.names=F)
+}

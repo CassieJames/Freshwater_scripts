@@ -3,7 +3,7 @@ data.dir='/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_ag
 out.dir='/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/'
 YEARs=seq(2015,2085,10)
 files=list.files()
-files=grep('RCP85',files,value=T)
+files=grep('RCP3PD',files,value=T)
 sh.dir='/home/jc148322/scripts/NARP_freshwater/Hydrology/accumulate_futures.sh/'; dir.create(sh.dir,recursive=T); setwd(sh.dir)
 
 for (tfile in files){ #tfile=files[3]

@@ -2,6 +2,11 @@
 #get the command line arguements
 args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) }
 
+##check if file exists
+tfile=paste(out.dir,es,"_",gcm,".Rdata",sep='')
+if(file.exists(tfile)) {
+}else{
+
 library(SDMTools)
 ###Set up inputs
 wd = '/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05'; setwd(wd)
@@ -25,4 +30,4 @@ out[,cois] = (out$AREA/1000000) * out[,cois]  # Multiply area(in km) by runoff (
 Runoff = aggregate(out[,cois], by = list(out$SegmentNo), sum)
 colnames(Runoff) = tt #add the column names
 save(Runoff, file=paste(out.dir,es,"_",gcm,".Rdata",sep='')) #save the runoff out	
-
+}
