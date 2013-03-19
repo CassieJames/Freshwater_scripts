@@ -2,9 +2,9 @@
 library(SDMTools); library(maptools)#load the necessary libraries
 source('/home/jc148322/scripts/libraries/cool_functions.r')
 
-image.dir = "/home/jc246980/ALA_downloads/Distribution_Images/Frog_distributions"          #location of images
-frogdata.dir = "/home/jc246980/ALA_downloads/Data/Frogs"
-work.dir="/home/jc246980/ALA_downloads"             # location of full fish species list
+image.dir = "/home/jc246980/Species_data/Distribution_images/Frogs/"          #location of images
+frogdata.dir = "/home/jc246980/Species_data/ALA_downloads/Data/Frogs/"
+work.dir="/home/jc246980/Species_data/ALA_downloads/"             # location of full fish species list
 data.dir="/home/jc246980/Janet_Stein_data"       # location of catchment and river files
 ala.data = "/home/jc214262/Refugia/Vertebrate_data_cleaned"      #location of ALA files
 

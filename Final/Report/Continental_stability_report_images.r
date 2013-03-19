@@ -70,6 +70,8 @@ pnts=cbind(x=c(113,116,116,113), y=c(-13,-13,-18.5,-18.5))
 			deltalim_x=round(range(outsd[,paste(es,year,percentile,sep='_')])[1],1)
 			deltalim_y=round(range(outsd[,paste(es,year,percentile,sep='_')])[2],1)
 			deltalims=c(deltalim_x,deltalim_y)
+			deltalims=max(abs(deltalims))
+			deltalims=c(deltalims*-1, deltalims)
 			deltamid=round(((deltalims[1]+deltalims[2])/2),1)
 			deltalabs = c(paste('<',deltalims[1]),deltamid,paste('>',deltalims[2]))
 
@@ -127,7 +129,8 @@ pnts=cbind(x=c(113,116,116,113), y=c(-13,-13,-18.5,-18.5))
 		dev.off() #close out the image
 				
 
-				
+all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(21)#colorRampPalette(c('red4','orangered','gold','beige','tan','lightblue4','blue4'))(21) #define a set of colors
+cols = all.cols[11:1] # blue to red				
 percentile=50
 					
 	png(paste(image.dir,'Temperature_sd_',year,'.png',sep=''),width=dim(base.asc)[1]*2+30, height=dim(base.asc)[2]*2, units='px', pointsize=20, bg='lightgrey')
@@ -164,8 +167,8 @@ percentile=50
 		}
 		  labs=deltalabs
 		  plot(1:20,axes=FALSE,ann=FALSE,type='n')
-		  text(10,18,"Difference from current",cex=3)
-		  color.legend(9,4,11,16,labs,rect.col=all.cols,align="rb",gradient="y", cex=2)
+		  text(10,18,"sd from current",cex=3)
+		  color.legend(9,4,11,16,labs,rect.col=cols,align="rb",gradient="y", cex=2)
 		
 		
 		
@@ -177,7 +180,7 @@ percentile=50
 
 				
 data.dir="/home/jc246980/Stability/Output/"			
-vois=c("pre")
+voi=c("pre")
 
 		png(paste(image.dir,'Precipitation_delta_',year,'.png',sep=''),width=dim(base.asc)[1]*1+80, height=dim(base.asc)[2]*3, units='px', pointsize=20, bg='lightgrey')
 		par(mar=c(0,0,0,0),cex=1,oma=c(4,4,4,0)) #define the plot parameters
@@ -214,41 +217,45 @@ vois=c("pre")
 			}
 		
 		    plot(1:20,axes=FALSE,ann=FALSE,type='n')
-		    text(10,18,"s from current",cex=3)
-		    color.legend(2,10,18,15,labs,rect.col=all.cols,align="rb",gradient="x", cex=1.5)
-		    mtext(c('10th Percentile','50th Percentile','90th Percentile'),side=2,line=1,outer=TRUE,cex=2.5,at=c(0.3, 0.59, 0.875))
+		    text(10,18,"Difference from current",cex=3)
+		    color.legend(2,10,18,15,deltalabs,rect.col=all.cols,align="rb",gradient="x", cex=1.5)
+		    mtext(c('10th Percentile','50th Percentile','90th Percentile'),side=2,line=1,outer=TRUE,cex=2.5,at=c(0.25, 0.56, 0.87))
 			
 		dev.off() #close out the image
 				
 
 				
 percentile=50
-					
-	png(paste(image.dir,'Precipitation_sd_',year,'.png',sep=''),width=dim(base.asc)[1]*2+30, height=dim(base.asc)[2]*3, units='px', pointsize=20, bg='lightgrey')
+outsd=read.csv(paste(data.dir,voi,"_sd.csv", sep=''))					
+all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(10)
+	
+	
+png(paste(image.dir,'Precipitation_sd_',year,'.png',sep=''),width=dim(base.asc)[1]*2+30, height=dim(base.asc)[2]*3, units='px', pointsize=20, bg='lightgrey')
 		par(mar=c(0,0,0,0),cex=1,oma=c(3,3,3,0)) #define the plot parameters
 
-			mat = matrix(c( 1,1,1,1,1,
-							1,1,1,1,1,
-							1,1,1,1,1,
-							1,1,1,1,1,
-							2,2,2,2,2),nr=5,nc=5,byrow=TRUE) #create a layout matrix for images
+			mat = matrix(c( 1,1,1,1,1,1,
+							1,1,1,1,1,1,
+							1,1,1,1,1,1,
+							1,1,1,1,1,1,
+							1,1,1,1,1,1,
+							1,1,1,1,1,1),nr=7,nc=6,byrow=TRUE) #create a layout matrix for images
 		
 			layout(mat) #call layout as defined above
 	
-			deltalim_x=round(range(outsd[,paste(es,year,percentile,sep='_')])[1],1)
-			deltalim_y=round(range(outsd[,paste(es,year,percentile,sep='_')])[2],1)
-			deltalims=c(deltalim_x,deltalim_y)
-			deltamid=round(((deltalims[1]+deltalims[2])/2),1)
-			deltalabs = c(paste('<',deltalims[1]),deltamid,paste('>',deltalims[2]))
-
+			# deltalim_x=round(range(outsd[,paste(es,year,percentile,sep='_')])[1],1)
+			# deltalim_y=round(range(outsd[,paste(es,year,percentile,sep='_')])[2],1)
+			# deltalims=c(deltalim_x,deltalim_y)
+			# deltamid=round(((deltalims[1]+deltalims[2])/2),1)
+			# deltalabs = c(paste('<',deltalims[1]),deltamid,paste('>',deltalims[2]))
 			tasc = base.asc; tasc[cbind(pos$row,pos$col)] = outsd[,paste(es,year,percentile,sep='_')] #get the data
-			tasc[which(tasc<deltalims[1])] = deltalims[1]; tasc[which(tasc>deltalims[2])] = deltalims[2] #ensure all data within limits
-			image(tasc,ann=FALSE,axes=FALSE,zlim=deltalims,col=all.cols) #create the image
-			plot(Drainageshape , lwd=2, ann=FALSE,axes=FALSE, add=TRUE)
 		
-			plot(1:20,axes=FALSE,ann=FALSE,type='n')
-			text(10,18,"sd from current",cex=3)
-			color.legend(2,10,18,15,labs,rect.col=all.cols,align="rb",gradient="x", cex=1.5)
+			
+			zlims = c(-2.5, 2.5)
+			image(tasc, ann=FALSE,axes=FALSE,col=all.cols,zlim=zlims)
+			plot(Drainageshape , lwd=2, ann=FALSE,axes=FALSE, add=TRUE)
+			text(130,-39.5,"sd from current",cex=4)
+			labs=c(-2.5,0,2.5)
+			color.legend(116,-42.5,142,-40.5,labs,rect.col=all.cols,align="rb",gradient="x", cex=3)
 			
 
 	dev.off() #close out the image
@@ -258,11 +265,12 @@ percentile=50
 
 data.dir="/home/jc246980/Stability/Output/"			
 voi=c("Runoff")
-all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(7)#colorRampPalette(c('red4','orangered','gold','beige','tan','lightblue4','blue4'))(21) #
+all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(6)
+#all.cols=colorRampPalette(c("#A50026","#F46D43","#FDAE61", "#FEE090", "#FFFFBF","#ABD9E9","#4575B4"))(6)
 
 	png(paste(image.dir,'Runoff_delta_',year,'.png',sep=''),width=dim(base.asc)[1]*1+80, height=dim(base.asc)[2]*3, units='px', pointsize=20, bg='lightgrey')
-		par(mar=c(0,0,0,0),cex=1,oma=c(4,4,4,0)) #define the plot parameters
-
+		par(mar=c(0,0,0,0),cex=1,oma=c(4,5,4,0)) #define the plot parameters
+		
 	    mat = matrix(c( 1,1,1,1,1,
 						1,1,1,1,1,
 						1,1,1,1,1,
@@ -279,33 +287,27 @@ all.cols = colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090",
 		
 				layout(mat) #call layout as defined above
 				
-				#outdelta=read.csv(paste(data.dir,voi,"_delta.csv", sep=''))
+				outdelta=read.csv(paste(data.dir,voi,"_delta.csv", sep=''))
 				outdeltalims=outdelta[,101:103] 
-				deltalim_x=round(range(outdeltalims)[1],1)
-				deltalim_y=round(range(outdeltalims)[2],1)
-				deltalims=c(deltalim_x,deltalim_y)
-				deltamid=round(((deltalims[1]+deltalims[2])/2),1)
-				deltalabs = c(paste('<',deltalims[1]),deltamid,paste('>',deltalims[2]))
 				
 				for (percentile in c(10,50,90)) { cat(percentile,'\n') #cycle through the percentiles
-					tasc = base.asc; tasc[cbind(pos$row,pos$col)] = outdelta[,paste(es,year,percentile,sep='_')] #get the data	
-					tasc[which(tasc>0 & tasc<.25)] = -1
-					tasc[which(tasc>=.25 & tasc<0.5)] = -2
-					tasc[which(tasc>=0.5 & tasc<0.75)] = -3
-					tasc[which(tasc>=0.75 & tasc<1)] = -4
-					tasc[which(tasc>=1 & tasc<2)] = -5
-					tasc[which(tasc>=2 & tasc<5)] = -6
-					tasc[which(tasc>=5)] = -7
+					tasc = base.asc; tasc[cbind(pos$row,pos$col)] = outdelta[,paste(es,year,percentile,sep='_')] #get the data						
+					tasc[which(tasc<=0.25)] = 0.01
+					tasc[which(tasc<=0.5 & tasc>0.25)] = 0.02
+					tasc[which(tasc>0.5 & tasc<=1)] = 0.03
+					tasc[which(tasc>1 & tasc<=2)] = 0.04
+					tasc[which(tasc>2 & tasc<=4)] = 0.05
+					tasc[which(tasc>=4)] = 0.06
 					zlims = range(c(0,as.vector(tasc)),na.rm=TRUE)
-					image(tasc, ann=FALSE,axes=FALSE,col=cols,zlim=zlims)
+					image(tasc, ann=FALSE,axes=FALSE,col=all.cols,zlim=zlims)
 					plot(Drainageshape , lwd=2, ann=FALSE,axes=FALSE, add=TRUE)
 				}
 
-				  labs=c("<0.25","0.5","0.75","1","2",">5")
+				  labs=c("<0.25","0.5","1","2",">4")
 				  plot(1:20,axes=FALSE,ann=FALSE,type='n')
 				  text(10,18,"Difference from current",cex=3)
-				  color.legend(2,10,labs,rect.col=all.cols,align="rb",gradient="x", cex=1.5)
-				  mtext(c('10th Percentile','50th Percentile','90th Percentile'),side=2,line=1,outer=TRUE,cex=2.5,at=c(0.3, 0.59, 0.875))
+				  color.legend(2,10,18,15,labs,rect.col=all.cols,align="rb",gradient="x", cex=1.5)
+				  mtext(c('90th Percentile','50th Percentile','10th Percentile'),side=2,line=1,outer=TRUE,cex=2.5,at=c(0.25, 0.55, 0.87))
 
 		dev.off() #close out the image
 				

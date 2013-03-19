@@ -19,7 +19,7 @@ GCMs = list.files(paste(future.dir,pattern=ESs[1],sep=''))
 YEARs=seq(2015, 2085, 10)
 
 ###################################################################################################
-### Calculate deltas for acucmulated runoff
+### Calculate deltas for accumulated runoff
 
 wd ="/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/" # location of current runoff
 current=read.csv(paste(wd, "Current_static.csv", sep=''))
@@ -34,7 +34,8 @@ tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'
 	for (es in ESs)  { cat(es,'\n') 
 		
 		for (yy in YEARs) {			
-			for (gcm in GCMs) {
+			
+			for (gcm in GCMs)  { cat(gcm,'\n') 
 			
 			tdata=read.csv(paste(wd,es,"_", gcm,".", yy,'.csv',sep='')) #load the data
 			tdata$annualtotal_fut=rowSums(tdata[,c(2:13)])
@@ -45,7 +46,7 @@ tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'
 			
 			}
 			
-			outquant = t(apply(delta,1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
+			outquant = t(apply(delta[,2:19],1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
 			outdelta[,intersect(grep(yy,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
 			
 		}
@@ -56,19 +57,9 @@ tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'
 	colnames(outdelta)[1]="SegmentNo"
 	write.csv(outdelta,paste(out.dir,"Accumulated_runoff_delta.csv",sep=''),row.names=T)	
 
+	write.csv(delta,paste(out.dir,"Accumulated_runoff_raw_deltas.csv",sep=''),row.names=T)	
 
 
-# ###Load river and ramsar info
-
-# RiverBasin.asc = read.asc("/home/jc246980/Janet_Stein_data/ncb_level1.asc") # load river basin asc
-# pos$Riverbasin  = extract.data(cbind(pos$lon,pos$lat), RiverBasin.asc)      # Map river basins onto postition file 
-# RiverBasins = unique(na.omit(pos$Riverbasin)) # create river basin vector
-
-# Ramsar.asc = read.asc("/home/jc246980/RAMSAR/ramsar_wetlands_for_download.asc") # load river basin asc
-# pos$ramsar  = extract.data(cbind(pos$lon,pos$lat), Ramsar.asc)      # Map river basins onto postition file 
-# RAMSARS = unique(na.omit(pos$ramsar)) # create river basin vector 
-
-# out.dir="/home/jc246980/Stability/Output/"
 
 
 

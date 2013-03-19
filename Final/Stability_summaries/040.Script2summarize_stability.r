@@ -29,7 +29,7 @@ RiverBasins = unique(na.omit(pos$Riverbasin)) # create river basin vector
 
 	for (voi in vois) { cat(voi,'\n') 
 	
-		outdelta=read.csv(paste(data.dir,voi,sep=''))
+	head
 	
 		table_delta = matrix(NA,nrow=length(RiverBasins)*3,ncol=(3*length(ESs)*length(YEARs))); #define the output matrix
 		tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(table_delta) = tt 

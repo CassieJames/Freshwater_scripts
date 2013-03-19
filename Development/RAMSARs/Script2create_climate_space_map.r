@@ -76,44 +76,81 @@ write.csv(out,paste(image.dir,voi,"_climatespace_data.csv",sep=''),row.names=T)
 }	
 
 ###################################################################################################
-####Determine currents
+####Read in the currents
 
+wd = '/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05/'; setwd(wd) #define and set the working directory
+baseasc = read.asc.gz('base.asc.gz');
+pos = as.data.frame(which(is.finite(baseasc),arr.ind=T))
+pos$lat = getXYcoords(baseasc)$y[pos$col]
+pos$lon = getXYcoords(baseasc)$x[pos$row] #append the lat lon
+pos$UID = 1:286244  
 
+data.dir ="/home/jc165798/working/NARP_hydro/stability/OZ_5km/data/annual/"
+vois=c("tmp","pre")
+
+	for (voi in vois) { cat(voi,'\n') #cycle through each variable of interest
+		out=NULL
+		load(paste(data.dir,voi,'.Rdata',sep='')) #load the data
+		annualdata=cbind(pos,annualdata[,c(1:2)])
+		annualdata=merge(Ramsar_area_agg,annualdata, by="UID", all.y=TRUE)			
+	
+		for(ram in RAMSARS) {
+			
+			tdata = annualdata[which(annualdata$ramsar==ram),] 
+			
+			outquant = t(apply(tdata[,10:11],2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) 
+			out = rbind(out, data.frame(RAMSARS=ram,MEAN=outquant[3], SD=outquant[4]))		
+			}
+	
+	if (voi=="tmp") {out_tmp=out}
+	if (voi=="pre") {out_pre=out}	
+	write.csv(out,paste(image.dir,voi,"_current_data.csv",sep=''),row.names=T)	
+	}
+
+out_current=cbind(out_tmp,out_pre)
+		
+
+######################################################################################################
+###Create figure
+
+pre_fut = read.csv("/home/jc246980/RAMSAR/Output/RAMSAR_images/Climate_space/pre_climatespace_data.csv")
+tmp_fut = read.csv("/home/jc246980/RAMSAR/Output/RAMSAR_images/Climate_space/tmp_climatespace_data.csv")
 
 	###Code to determine mid point to draw ellipse and radius from that midpoint
+	out_final=cbind(tmp_fut,pre_fut)
 	
-	#rem to run again using pre now
-	out_final=cbind(out_tmp,out_pre)
-	
-	out_final$X_ellipse=(out_final[,4]+out_final[,6])/2
-	out_final$Y_ellipse=(out_final[,10]+out_final[,12])/2
-	out_final$X_radius=(out_final$X_ellipse-out_final[,4])
-	out_final$Y_radius=(out_final$Y_ellipse-out_final[,10])
+	out_final$X_ellipse=(out_final[,5]+out_final[,7])/2
+	out_final$Y_ellipse=(out_final[,12]+out_final[,14])/2
+	out_final$X_radius=(out_final$X_ellipse-out_final[,5])
+	out_final$Y_radius=(out_final$Y_ellipse-out_final[,12])
 	
 	
 	png(paste(image.dir,'climate_space_tmpVSpre_RCP85.png',sep=''),width=dim(baseasc)[1]*2+30, height=dim(baseasc)[1]*2+80, units='px', pointsize=50, bg='white') 
 			par(mfrow=c(1,1),mar=c(5,5,2,1), oma=c(0,0,1,0)) 	
+			
 			graph_data = out_final[(out_final$ESs=="RCP85"),]
-			graph_data_2015 = out_final[(out_final$ESs=="RCP85") & (out_final$YEARs==2015),]	
 			graph_data_2085 = out_final[(out_final$ESs=="RCP85") & (out_final$YEARs==2085),]	
-			ylim=c(round(min(graph_data[,10:12])-50),round(max(graph_data[,10:12])+50))
-			xlim=c(round(min(graph_data[,4:6])-0.5),round(max(graph_data[,4:6])+0.5))
-			plot(rbind(graph_data_2015[,5],graph_data_2085[,5]) ,rbind(graph_data_2015[,11],graph_data_2085[,11]) ,xlim=xlim, ylim=ylim,ylab='Annual Precipitation', xlab='Mean Annual Temperature', font.sub=2, font.lab=1,col = greycol(100), cex.lab=1.2, cex.axis=1, axes=T,xaxs='i',yaxs='i', col.axis='black', pch=20)			
+			
+			ylim=c(round(min(graph_data[,12:14])-100),round(max(graph_data[,12:14])+100))
+			xlim=c(round(min(graph_data[,5:7])-3),round(max(graph_data[,5:7])+0.5))
+			
+			
+			plot(rbind(out_current[,2],graph_data_2085[,5]) ,rbind(out_current[,5],graph_data_2085[,13]) ,xlim=xlim, ylim=ylim,ylab='Annual Precipitation', xlab='Mean Annual Temperature', font.sub=2, font.lab=1,col = greycol(100), cex.lab=1.2, cex.axis=1, axes=T,xaxs='i',yaxs='i', col.axis='black', pch=20)			
 			rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey90")
 			for(i in 1:nrow(graph_data_2085)){
-				filledellipse(graph_data_2085[i,15], ry1 = graph_data_2085[i,16], mid = c(graph_data_2085[i,13],graph_data_2085[i,14]),col="#698B2255",lty=3, lwd=2)
+				filledellipse(graph_data_2085[i,17], ry1 = graph_data_2085[i,18], mid = c(graph_data_2085[i,15],graph_data_2085[i,16]),col="#698B2255",lty=3, lwd=2)
 			}
 
 
-			for(i in 1:nrow(graph_data_2015)){
-				filledellipse(graph_data_2015[i,15], ry1 = graph_data_2015[i,16], mid = c(graph_data_2015[i,13],graph_data_2015[i,14]), col = "gray20", lty=3)
+			for(i in 1:nrow(out_current)){
+				filledellipse(out_current[i,3], ry1 = out_current[i,6], mid = c(out_current[i,2],out_current[i,5]), col = "gray20", lty=3)
 			}		
 	
 
 			
-			points(rbind(graph_data_2015[,5],graph_data_2085[,5]) ,rbind(graph_data_2015[,11],graph_data_2085[,11]) ,xlim=xlim, col="darkgrey", ylim=ylim,pch=10)		
-			for(i in 1:nrow(graph_data_2015)){
-					arrows(graph_data_2015[,5], graph_data_2015[,11], graph_data_2085[,5], graph_data_2085[,11], length = 0.25, angle = 30, lwd=4)
+			points(rbind(out_current[,2],graph_data_2085[,6]) ,rbind(out_current[,5],graph_data_2085[,13]) ,xlim=xlim, col="darkgrey", ylim=ylim,pch=10)		
+			for(i in 1:nrow(out_current)){
+					arrows(out_current[,2], out_current[,5], graph_data_2085[,6], graph_data_2085[,13], length = 0.25, angle = 30, lwd=4)
 			}
 	
 	dev.off() 

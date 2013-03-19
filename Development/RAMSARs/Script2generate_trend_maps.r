@@ -198,12 +198,41 @@ RAMSARS=unique(Ramsar_area_agg$ramsar)
 	}
 
 
+### Trends in runoff
+
+raster=read.asc.gz('/home/jc148322/NARPfreshwater/SDM/SegmentNo_1km.asc.gz')
+pos = as.data.frame(which(is.finite(raster),arr.ind=T))
+pos$lat = getXYcoords(raster)$y[pos$col]
+pos$lon = getXYcoords(raster)$x[pos$row] #append the lat lon
+pos$SegmentNo=raster[cbind(pos$row,pos$col)]    
+base.asc=raster   
+
+wd='/home/jc246980/RAMSAR/'                
+load(paste(wd,'Area_aggregated_by_ramsar_1km.Rdata',sep=''))
+RAMSARS=unique(Ramsar_area_agg$ramsar)
 
 
+out=NULL
+load("/home/jc246980/Hydrology.trials/Stability/Runoff/Quantiles_data/Runoff_data.Rdata")	
+	
 
 
+	
+		for(ram in RAMSARS) {				temp=tdata[,grep(es,colnames(tdata))]
+				tdata = annualdata[which(annualdata$ramsar==ram),] 	
+				for(year in YEARs) {
+				
+					ttemp=temp[,grep(year,colnames(temp))]
+					outquant = t(apply(ttemp,1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) 	
+					out2 = (apply(outquant,2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) 
+					out = rbind(out, data.frame(RAMSARS=ram,ESs=es, YEARs=year, Q10th=out2[2],Q50th=out2[5],Q90th=out2[8]))		
+				}	
+			}
+		}
 
-
+	write.csv(out,paste(image.dir,"runoff_trendgraph_data.csv",sep=''),row.names=T)	
+	
+	out=read.csv(paste(image.dir,"Pre_trendgraph_data.csv",sep='')) 
 
 
 

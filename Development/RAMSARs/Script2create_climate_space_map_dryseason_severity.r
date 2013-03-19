@@ -119,23 +119,27 @@ vois_files=list.files("/home/jc246980/DrySeason/Currentdat/")
 		png(paste(image.dir,es,"_",yy,"SeverityVSNoMth.png",sep=''),width=dim(baseasc)[1]*2+30, height=dim(baseasc)[1]*2+80, units='px', pointsize=50, bg='white') 
 		par(mfrow=c(1,1),mar=c(5,5,2,1), oma=c(0,0,1,0)) 	
 		
-		ylim=c(round(min(future_date_num_mth[,4:6])-0.5),round(max(future_date_num_mth[,4:6])+0.5))
-		xlim=c(round(min(future_date_severity[,4:6])-50),round(max(future_date_severity[,4:6])+50))
-		
-		plot(rbind(future_date_severity[,5], current_severity[,2]) ,rbind(future_date_num_mth[,5], current_num_mth[,2]) ,xlim=xlim, ylim=ylim,xlab='Dry Season Severity', ylab='Number of months', 
-		font.sub=2, font.lab=1,col = greycol(100), cex.lab=1.2, cex.axis=1, axes=T,xaxs='i',yaxs='i', col.axis='black', pch=20)	
-		
-		rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey90")
-		
-		
-		for(i in 1:nrow(future_date)){
-			filledellipse(future_date$X_radius[i], ry1 = future_date$Y_radius[i], mid = c(future_date$X_ellipse[i],future_date$Y_ellipse[i]),col="#698B2255",lty=3, lwd=2)
-		}
-		
+			ylim=c(round(min(future_date_num_mth[,4:6])-0.5),round(max(future_date_num_mth[,4:6])+0.5))
+			xlim=c(round(min(future_date_severity[,4:6])-50),round(max(future_date_severity[,4:6])+50))
+			
+			plot(rbind(future_date_severity[,5], current_severity[,2]) ,rbind(future_date_num_mth[,5], current_num_mth[,2]) ,xlim=xlim, ylim=ylim,xlab='Dry Season Severity', ylab='Number of months', 
+			font.sub=2, font.lab=1,col = greycol(100), cex.lab=1.2, cex.axis=1, axes=T,xaxs='i',yaxs='i', col.axis='black', pch=20)	
+			
+			rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4], col = "grey90")
+			
+			
+			for(i in 1:nrow(future_date)){
+				filledellipse(future_date$X_radius[i], ry1 = future_date$Y_radius[i], mid = c(future_date$X_ellipse[i],future_date$Y_ellipse[i]),col="#698B2255",lty=3, lwd=2)
+			}
+			
+			for(i in 1:nrow(current_severity)){
+				filledellipse(current_severity$sd[i], ry1 = current_num_mth$sd[i], mid = c(current_severity$mean[i],current_num_mth$mean[i]),col="#66666622",lty=3, lwd=2)
+			}
+			
 
-		for(i in 1:nrow(current_severity)){
-		arrows(current_severity[,2], current_num_mth[,2], future_date_severity[,5], future_date_num_mth[,5], length = 0.25, angle = 30, lwd=4)
-		}
+			for(i in 1:nrow(current_severity)){
+			arrows(current_severity[,2], current_num_mth[,2], future_date_severity[,5], future_date_num_mth[,5], length = 0.25, angle = 30, lwd=4)
+			}
 
 		dev.off()
 
