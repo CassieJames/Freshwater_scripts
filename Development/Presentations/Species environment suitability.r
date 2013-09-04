@@ -35,12 +35,12 @@ data.dir="/home/jc246980/SDM/Species_delta_data/"
 				outdelta[which(outdelta>2)]=2
 				outdelta=cbind(outquant[,1:2],outdelta)
 				pos=merge(pos,outdelta, by='SegmentNo',all.x=TRUE)
-				write.csv(pos,paste(data.dir,"Delta_", tax,".csv",sep=''),row.names=F)	
+				write.csv(pos,paste(data.dir,"Delta_new", tax,".csv",sep=''),row.names=F)	
 		}
 	
 	
 ### Create image
-	png(paste('species_2085_50th_percentile.png',sep=''),width=dim(base.asc)[1]*1+160, height=dim(base.asc)[2]*1, units='px', pointsize=100, bg='lightgrey')
+	png(paste('species_2085_50th_percentile_new.png',sep=''),width=dim(base.asc)[1]*1+160, height=dim(base.asc)[2]*1, units='px', pointsize=100, bg='lightgrey')
 		
 		##set up image layout
 		par(mar=c(4,0,0,0),cex=1,oma=c(0,0,0,0)) #define the plot parameters
@@ -57,25 +57,25 @@ data.dir="/home/jc246980/SDM/Species_delta_data/"
 							
 		
 		voi=50
-		pos_fish=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_fish.csv")
+		pos_fish=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_newfish.csv")
 		tasc=make.asc(pos_fish[,paste("X",yr,'_',voi,sep='')])
 		image(base.asc,ann=F,axes=F,col='white')
 		image(tasc,ann=F,axes=F,col=cols,zlim=zlim,add=TRUE)
 		plot(Drainageshape , lwd=5, ann=FALSE,axes=FALSE, add=TRUE)
 		
-		pos_crayfish=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_crayfish.csv")
+		pos_crayfish=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_newcrayfish.csv")
 		tasc=make.asc(pos_crayfish[,paste("X",yr,'_',voi,sep='')])
 		image(base.asc,ann=F,axes=F,col='white')
 		image(tasc,ann=F,axes=F,col=cols,zlim=zlim,add=TRUE)
 		plot(Drainageshape , lwd=5, ann=FALSE,axes=FALSE, add=TRUE)
 		
-		pos_frog=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_frog.csv")
+		pos_frog=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_newfrog.csv")
 		tasc=make.asc(pos_frog[,paste("X",yr,'_',voi,sep='')])
 		image(base.asc,ann=F,axes=F,col='white')
 		image(tasc,ann=F,axes=F,col=cols,zlim=zlim,add=TRUE)
 		plot(Drainageshape , lwd=5, ann=FALSE,axes=FALSE, add=TRUE)
 		
-		pos_turtles=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_turtles.csv")
+		pos_turtles=read.csv("/home/jc246980/SDM/Species_delta_data/Delta_newturtles.csv")
 		tasc=make.asc(pos_turtles[,paste("X",yr,'_',voi,sep='')])
 		image(base.asc,ann=F,axes=F,col='white')
 		image(tasc,ann=F,axes=F,col=cols,zlim=zlim,add=TRUE)
@@ -83,11 +83,11 @@ data.dir="/home/jc246980/SDM/Species_delta_data/"
 			
 
 		#legend and labels
-		labs=c("0",".2",".4",".6",".8","1","1.2","1.4","1.6","1.8",">=2")
-		plot(1:20,axes=FALSE,ann=FALSE,type='n')
-		text(10,14,"Proportion of current",cex=2)
-		color.legend(2,10,18,12,labs,rect.col=cols,align="rb",gradient="x", cex=1)
-		legend(1.3,8, fill='white','No richness, current or future',bty='n', cex=1.5)
+		#labs=c("0",".2",".4",".6",".8","1","1.2","1.4","1.6","1.8",">=2")
+		#plot(1:20,axes=FALSE,ann=FALSE,type='n')
+		#text(10,14,"Proportion of current",cex=2)
+		#color.legend(2,10,18,12,labs,rect.col=cols,align="rb",gradient="x", cex=1)
+		#legend(1.3,8, fill='white','No richness, current or future',bty='n', cex=1.5)
 
 	dev.off()
 		

@@ -1,30 +1,21 @@
 ###################################################################################################
-#### Script to map all turtle data onto reaches
+#### Script to map all crayfish data onto reaches
 
 library(SDMTools); library(maptools) #load the necessary library
 
-craydata.dir = "/home/jc246980/Species_data/ALA_downloads/Data/Inverts/Invert_species/" # crayfish point data directory
-craydatabase= "/home/jc246980/Species_data/Crayfish_database/Crayfish_species/"
-crayfishadded="/home/jc246980/Species_data/Crayfish_database/Additional_records/"
-
-
-
+craydata.dir = "/home/jc246980/Species_data/Crayfish_database/Merged_crayfish_records/" # crayfish point data directory
 out.dir="/home/jc246980/Species_data/Reach_data/"
+
 wd = "/home/jc246980/Hydrology.trials/"; setwd(wd)                        
-#CatchmentRaster.asc = read.asc(paste(wd,'catchmentraster250m2.asc', sep=''))  
-#save(CatchmentRaster.asc,file=paste(wd,'Catchmentraster250.Rdata',sep=''))
 load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
+
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
 
-
-Cray_data = matrix(NA, nrow=nrow(networkatts), ncol=115)
+Cray_data = matrix(NA, nrow=nrow(networkatts), ncol=136)
 Cray_data [,1] <- networkatts[,9]
-species=list.files(craydata.dir)
-species2=list.files(craydatabase)
-species3=list.files(crayfishadded)
 
-full.list=unique((c(species, species2, species3)))
-
+full.list = read.csv("/home/jc246980/Species_data/Crayfish_database/Full_crayfish_list.csv")
+full.list=full.list[,1]
 speciesname=gsub('.csv','',full.list)		
 colnames(Cray_data)=c("SegmentNo", speciesname)
 #species that will have to be removed: # Cherax depressus, Cherax_neocarinatus, Cherax quinquecarinatus
@@ -33,61 +24,11 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 	for (sp in 1:length(full.list)) { cat(full.list[sp],'\n')
 		speciesname=gsub('.csv','',full.list[sp])
 		
-		species.data.ala=NULL
-		species.data.db=NULL
-		species.data.add=NULL
+		species.data=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
+		species.data.latdec=species.data$LAT
+		species.data.longdec=species.data$LONG
 		
-		#pull in data from various sources					  
-		if(file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))){
-				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
-				species.data.latdec=species.data.ala$Latitude_processed
-				species.data.longdec=species.data.ala$Longitude_processed
-		}
-		
-		
-		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))){
-				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
-				species.data.latdec=species.data.db$LATDEC*-1
-				species.data.longdec=species.data.db$LONGDEC
-		}
-	  
-		if(file.exists(paste(crayfishadded,"/", full.list[sp],sep=''))){
-				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
-				species.data.latdec=species.data.add$Lat
-				species.data.longdec=species.data.add$Long
-		}
-		
-		if(file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))&& file.exists(paste(craydatabase,"/", full.list[sp],sep=''))){
-				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
-				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
-				species.data.longdec=c(species.data.ala$Longitude_processed, species.data.db$LONGDEC)
-				species.data.latdec=c(species.data.ala$Latitude_processed, (species.data.db$LATDEC*-1))
-		}
-		
-		if(file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep=''))){
-				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
-				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
-				species.data.longdec=c(species.data.ala$Longitude_processed, species.data.add$Long)
-				species.data.latdec=c(species.data.ala$Latitude_processed, species.data.add$Lat)
-		}
-		
-		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep=''))){
-				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
-				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
-				species.data.longdec=c(species.data.db$LONGDEC, species.data.add$Long)
-				species.data.latdec=c((species.data.db$LATDEC*-1), species.data.add$Lat)
-		}
-		
-		if(file.exists(paste(craydatabase,"/", full.list[sp],sep=''))&& file.exists(paste(crayfishadded,"/", full.list[sp],sep='')) && file.exists(paste(craydata.dir,"/", full.list[sp],sep=''))){
-				
-				species.data.ala=read.csv(paste(craydata.dir,"/",full.list[sp],sep=''))
-				species.data.db=read.csv(paste(craydatabase,"/",full.list[sp],sep=''))
-				species.data.add=read.csv(paste(crayfishadded,"/",full.list[sp],sep=''))
-				species.data.longdec=c(species.data.ala$Longitude_processed, species.data.db$LONGDEC, species.data.add$Long)
-				species.data.latdec=c(species.data.ala$Latitude_processed, (species.data.db$LATDEC*-1), species.data.add$Lat)
-		}
-		
-
+	
 		SegmentNo_SP_Present  = extract.data(cbind(species.data.longdec,species.data.latdec),CatchmentRaster.asc) # extract Segment number from Catchment raster
 		SegmentNo_SP_Present=unique(na.omit(SegmentNo_SP_Present))
 		
@@ -99,5 +40,6 @@ colnames(Cray_data)=c("SegmentNo", speciesname)
 
 
 	write.csv(Cray_data,paste(out.dir,'Crayfish_reach.csv',sep=''),row.names=F)
+	save(Cray_data,file=paste(out.dir,"Crayfish_reach.Rdata",sep=''))
 	
 	write.csv(full.list,paste(out.dir,'Full_crayfish_list.csv',sep=''),row.names=F)

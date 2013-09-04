@@ -140,14 +140,14 @@ save(occur,file=paste(out.dir,"Turtles_reach_master_V2.Rdata",sep=''))
 
 ### Crayfish
 
-
-occur.file="/home/jc246980/Species_data/Reach_data/Crayfish_reach_master.Rdata" #give the full file path of your species data
+out.dir="/home/jc246980/Species_data/Reach_data/"
+occur.file="/home/jc246980/Species_data/Reach_data/Crayfish_reach.Rdata" #give the full file path of your species data
 occur=load(occur.file)
 occur=get(occur) #rename species occurrence data to 'occur'
 occur$count=rowSums(occur[,2:ncol(occur)]) #count all presence records for each SegmentNo
 occur=occur[which(occur$count>0),] #remove SegmentNos (rows) with no occurrence records for any species
 occur=occur[,-grep('count',colnames(occur))]  #remove the 'count' column
-save(occur,file=paste(out.dir,"Crayfish_reach_master_V2.Rdata",sep=''))
+save(occur,file=paste(out.dir,"Crayfish_reach_master.Rdata",sep=''))
 
 
 

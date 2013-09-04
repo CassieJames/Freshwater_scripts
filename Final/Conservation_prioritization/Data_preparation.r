@@ -51,7 +51,7 @@ tdata4=tdata3[,c("lat", "lon", "SegmentNo")]
 dataframe2asc(tdata4) 												# create asc
 
 ###################################################################################################
-#### Create fish species asc files
+#### Create species asc files
 
 out.dir="/home/jc246980/Zonation/"
 load(paste(out.dir,'Zonation_basic_info.Rdata',sep='')) 			# load pos250
@@ -94,29 +94,6 @@ load(paste(out.dir,'Zonation_Fish_AWT.Rdata',sep=''))		# read in file
 out.dir="/home/jc246980/Zonation/Species.asc/"; setwd(out.dir)
 spdata_temp = spdata[,-c(1,2,3,6,7)] # create fish asc files
 dataframe2asc(spdata_temp)
-
-
-###################################################################################################
-#### Create crayfish species asc files
-
-
-out.dir="/home/jc246980/Zonation/"
-load(paste(out.dir,'Zonation_basic_info.Rdata',sep='')) 			# load pos250
-load("/home/jc246980/Zonation/Crayfish_reach_aggregated.Rdata") 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ########################################################################################
 ### Create connectivity list 
