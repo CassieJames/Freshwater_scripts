@@ -1,6 +1,6 @@
 ######################################################################W############################
-#Script to determine stabilities for 31 RAMSARs across Australia
-#C. James..........................................14th January 2013
+#Script to determine stabilities for all Ramsars across Australia
+#C. James..........................................17th September 2013
 
 ###Load necessary libraries
 library(SDMTools); library(maptools) #define the libraries needed
@@ -14,7 +14,7 @@ pos$lon = getXYcoords(baseasc)$x[pos$row] #append the lat lon
 pos$UID = 1:286244       
 
 future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
-out.dir="/home/jc246980/Stability/Ramsars/"
+out.dir="/home/jc246980/RAMSAR/ALL_Ramsar_analysis/"
 
 ESs=list.files(future.dir, pattern='RCP')
 GCMs = list.files(paste(future.dir,pattern=ESs[1],sep=''))
@@ -24,7 +24,7 @@ YEARs=seq(2015, 2085, 10)
 
                                                      	# add unique identifier to each 5km grid cell
 wd='/home/jc246980/RAMSAR/'                
-load(paste(wd,'Area_aggregated_by_ramsar_5km.Rdata',sep=''))      
+load(paste(wd,'Area_aggregated_by_ramsar_5km_all.Rdata',sep=''))      
 Ramsars = unique(na.omit(Ramsar_area_agg$ramsar)) # create river basin vector
 
 ###################################################################################################
@@ -87,12 +87,13 @@ for (voi in vois) { cat(voi,'\n') #cycle through each variable of interest
 
 				}
 			}
+	
+	write.csv(outdelta,paste(out.dir,voi,"_delta_all.csv",sep=''),row.names=T)	 
+	write.csv(outsd,paste(out.dir,voi,"_sd_all.csv",sep=''),row.names=T)	
 	}
 	
-	write.csv(outdelta,paste(out.dir,voi,"_delta.csv",sep=''),row.names=T)	 
-	write.csv(outsd,paste(out.dir,voi,"_sd.csv",sep=''),row.names=T)	 
-}
  
+
  
  
 ###################################################################################################
@@ -103,8 +104,8 @@ wd ="/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/TomHarwood_data/" 
 load(paste(wd, "Qrun.current_5km_means.Rdata", sep=''))
 Current=as.matrix(rowSums(Qrun))
 
-outdelta = matrix(NA,nrow=length(RiverBasins),ncol=3*length(ESs)*length(YEARs)); #define the output matrix
-tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt;rownames(outdelta)=RiverBasins #add the column names
+outdelta = matrix(NA,nrow=length(Ramsars),ncol=3*length(ESs)*length(YEARs)); #define the output matrix
+tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt;rownames(outdelta)=Ramsars #add the column names
 
 	for (es in ESs) {
 	
@@ -112,9 +113,9 @@ tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'
 	tdata=cbind(pos[,1:5],Current)
 	data.runoff=cbind(tdata,data.runoff)
  
-	 for (rb in RiverBasins) { cat(rb,'\n') #cycle through each basin
+	 for (ram in Ramsars) { cat(ram,'\n') #cycle through each basin
 		
-				data.runoff.rb = data.runoff[which(data.runoff$Riverbasin==rb),] #get the data only for the rb of interest
+				data.runoff.rb = data.runoff[which(data.runoff$Ramsars==ram),] #get the data only for the ramsar of interest
 				mean.runoff.rb=as.data.frame(colMeans(data.runoff.rb)) #		
 				mean.runoffdelta.rb =  mean.runoff.rb #copy annualdata to be replaced with number of standard deviation and percentiles		
 				
@@ -129,14 +130,14 @@ tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'
 						
 						rois = grep(year,rownames(mean.runoffdelta.rb)) #define the columns that intersect the ES & year
 						outquant = t(apply(as.data.frame(mean.runoffdelta.rb[rois,]),2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
-						outdelta[rownames(outdelta)==rb,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
+						outdelta[rownames(outdelta)==ram,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
 
 					}
 				
 	    }
 	}
 
-write.csv(outdelta,paste(out.dir,"/Runoff_delta.csv",sep=''),row.names=T)	
+write.csv(outdelta,paste(out.dir,"/Runoff_delta_all.csv",sep=''),row.names=T)	
 
  
 
@@ -207,8 +208,8 @@ vois_data=c("num_month","total_severity","max_clust_length", "fut_clust_severity
 				}
 		}
 		
-		write.csv(outdelta,paste(out.dir,voi,"_delta.csv",sep=''),row.names=T)	 
-		write.csv(outsd,paste(out.dir,voi,"_sd.csv",sep=''),row.names=T)	 
+		write.csv(outdelta,paste(out.dir,voi,"_delta_all.csv",sep=''),row.names=T)	 
+		write.csv(outsd,paste(out.dir,voi,"_sd_all.csv",sep=''),row.names=T)	 
 	 
 	 }
  
