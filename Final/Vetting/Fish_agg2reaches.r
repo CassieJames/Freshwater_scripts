@@ -1,4 +1,4 @@
-####Script to aggregate species data for segment numbers where there are duplicates
+####Script to aggregate species data for segment numbers where there are duplicates - this code is probably for the wet tropics work only
 
 species.data = read.csv("/home/jc246980/Species_data/Reach_data/Fish_reach.csv") # read in species data
 

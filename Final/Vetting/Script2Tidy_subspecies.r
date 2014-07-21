@@ -5,22 +5,22 @@
 
 tdata=read.csv("/home/jc246980/Species_data/Reach_data/Fish_reach.csv")
 
-temp=tdata[,intersect(grep("Melanotaenia",colnames(tdata)),grep("australis",colnames(tdata)))]
-temp$Melanotaenia_australis_master=apply(temp, 1, sum)
-temp[temp$Melanotaenia_australis_master>0,3] <-1
+# temp=tdata[,intersect(grep("Melanotaenia",colnames(tdata)),grep("australis",colnames(tdata)))]
+# temp$Melanotaenia_australis_master=apply(temp, 1, sum)
+# temp[temp$Melanotaenia_australis_master>0,3] <-1
 
-tdata[,grep("Melanotaenia_australis", colnames(tdata))] = temp$Melanotaenia_australis_master # replace M. australis data with master data
+# tdata[,grep("Melanotaenia_australis", colnames(tdata))] = temp$Melanotaenia_australis_master # replace M. australis data with master data
 
-soi="Melanotaenia_splendida.australis"
-tdata=tdata[,-grep(soi,colnames(tdata)) ] # delete old sub species column
+# soi="Melanotaenia_splendida.australis"
+# tdata=tdata[,-grep(soi,colnames(tdata)) ] # delete old sub species column
 
-soi = "Melanotaenia_splendida"
-temp=tdata[,grep(soi,colnames(tdata))]	
-temp$Melanotaenia_splendida_master=apply(temp, 1, sum)
-temp[temp$Melanotaenia_splendida_master>0,5] <-1
+# soi = "Melanotaenia_splendida"
+# temp=tdata[,grep(soi,colnames(tdata))]	
+# temp$Melanotaenia_splendida_master=apply(temp, 1, sum)
+# temp[temp$Melanotaenia_splendida_master>0,5] <-1
 
-soi="Melanotaenia_splendida"	
-tdata[,grep(soi, colnames(tdata))][1] = temp$Melanotaenia_splendida_master # replace M. plendida data with new master data with sub species merged
+# soi="Melanotaenia_splendida"	
+# tdata[,grep(soi, colnames(tdata))][1] = temp$Melanotaenia_splendida_master # replace M. splendida data with new master data with sub species merged
 
 
 temp=tdata[,intersect(grep("eleotris",colnames(tdata)),grep("lineolatus",colnames(tdata)))]

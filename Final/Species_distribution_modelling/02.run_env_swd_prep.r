@@ -17,10 +17,11 @@ runoff.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_
 bioclim.dir ="/home/jc246980/Climate/5km/Future/Bioclim_reach/"
 dryseason.dir = "/home/jc246980/DrySeason/DrySeason_reach/"
 basedir = '/home/jc165798/working/NARP_FW_SDM/'
+out.dir='/home/jc246980/SDM/Environmental_future/'
 terrain = read.dbf('/home/jc246980/Janet_Stein_data/Terrain.dbf')
-cois=c('SEGMENTNO', 'VALLEYSLOP', 'STRELEMEAN','D2OUTLET')
+cois=c('SEGMENTNO', 'VALLEYSLOP', 'CATSLOPE','D2OUTLET')
 terrain_sub=terrain[,cois]
-colnames(terrain_sub)=("SegmentNo", "Segslope", "Segelev", "d2outlet")
+colnames(terrain_sub)=("SegmentNo", "Segslope", "Catslope", "d2outlet")
 
 ###load in necessary data
 if (file.exists(paste(basedir,'raw_data/current_flow_data_for_future.Rdata',sep=''))) {
@@ -71,6 +72,6 @@ colnames(Enviro_dat) = c('SegmentNo',"num.month", "total.severity", "max.clust.l
 out = merge(out,Enviro_dat); out = merge(out,ANNUAL_MEAN) #fully define the output
 out=merge(out,terrain_sub)
 
-write.csv(out,paste(basedir,'proj_data/',es,"_",gcm,"_",yy,".csv",sep=''),row.names=FALSE)#write out the data
+write.csv(out,paste(out.dir,es,"_",gcm,"_",yy,".csv",sep=''),row.names=FALSE)#write out the data
 rm(list=c("runoff.data","accum.data","tdata","Accum_flow","Runoff_local","Hydro_missing","Enviro_dat","out"));gc() #cleanup extra files
 }

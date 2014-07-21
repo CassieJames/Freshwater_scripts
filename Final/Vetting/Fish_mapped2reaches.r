@@ -26,7 +26,7 @@ fishadded="/home/jc246980/Species_data/NorthernOZFish/Additional_Data/"
 
 out.dir="/home/jc246980/Species_data/Reach_data/"
 wd = "/home/jc246980/Hydrology.trials/"; setwd(wd)                        
-#CatchmentRaster.asc = read.asc(paste(wd,'catchmentraster250m2.asc', sep=''))  
+CatchmentRaster.asc = read.asc(paste(wd,'catchmentraster250m2.asc', sep=''))  
 #save(CatchmentRaster.asc,file=paste(wd,'Catchmentraster250.Rdata',sep=''))
 load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')

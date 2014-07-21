@@ -5,15 +5,23 @@
 ###Load necessary libraries
 library(SDMTools); library(maptools) #define the libraries needed
 
-###Set up base files
-wd = '/home/jc165798/Climate/CIAS/Australia/5km/baseline.76to05/'; setwd(wd) #define and set the working directory
-baseasc = read.asc.gz('base.asc.gz');
-pos = as.data.frame(which(is.finite(baseasc),arr.ind=T))
-pos$lat = getXYcoords(baseasc)$y[pos$col]
-pos$lon = getXYcoords(baseasc)$x[pos$row] #append the lat lon
-pos$UID = 1:286244       
+###Set up base files at 1km resolution
+# wd = '/home/jc246980/RAMSAR/'; setwd(wd) #define and set the working directory
+# baseasc = read.asc.gz('base.asc.gz');
+# pos = as.data.frame(which(is.finite(baseasc),arr.ind=T))
+# pos$lat = getXYcoords(baseasc)$y[pos$col]
+# pos$lon = getXYcoords(baseasc)$x[pos$row] #append the lat lon
+# pos$UID = 1:6978397     
 
-future.dir="/home/jc165798/Climate/CIAS/Australia/5km/monthly_csv/"
+###Set up base files at 5km resolution
+wd = '/rdsi/ctbcc_data/Climate/CIAS/Australia/5km/baseline.76to05/'; setwd(wd) #define and set the working directory
+base.asc = read.asc('base.asc');
+pos = as.data.frame(which(is.finite(base.asc),arr.ind=T))
+pos$lat = getXYcoords(base.asc)$y[pos$col]
+pos$lon = getXYcoords(base.asc)$x[pos$row] #append the lat lon
+pos$UID = 1:286244     
+
+future.dir="/rdsi/ctbcc_data/Climate/CIAS/Australia/5km/monthly_csv/"
 out.dir="/home/jc246980/RAMSAR/ALL_Ramsar_analysis/"
 
 ESs=list.files(future.dir, pattern='RCP')
@@ -25,16 +33,17 @@ YEARs=seq(2015, 2085, 10)
                                                      	# add unique identifier to each 5km grid cell
 wd='/home/jc246980/RAMSAR/'                
 load(paste(wd,'Area_aggregated_by_ramsar_5km_all.Rdata',sep=''))      
-Ramsars = unique(na.omit(Ramsar_area_agg$ramsar)) # create river basin vector
+Ramsars = unique(na.omit(Ramsar_area_agg$ramsar)) # create ramsar vector
 
 ###################################################################################################
 ####determine average stability for temperature mean, max, min, and precipitation
 
-data.dir ="/home/jc165798/working/NARP_hydro/stability/OZ_5km/data/annual/"
+data.dir ="/rdsi/ccimpacts/NARP_hydro/stability/OZ_5km/data/annual/"
 vois=c("tmp", "tmx", "tmn", "pre")
 
 for (voi in vois) { cat(voi,'\n') #cycle through each variable of interest
 	load(paste(data.dir,voi,'.Rdata',sep='')) #load the data
+	
 	annualdata=cbind(pos[,1:5],annualdata)
 	annualdata=merge(Ramsar_area_agg, annualdata, by='UID') # merge annual data with Area agg file
 	
@@ -91,53 +100,62 @@ for (voi in vois) { cat(voi,'\n') #cycle through each variable of interest
 	write.csv(outdelta,paste(out.dir,voi,"_delta_all.csv",sep=''),row.names=T)	 
 	write.csv(outsd,paste(out.dir,voi,"_sd_all.csv",sep=''),row.names=T)	
 	}
-	
- 
 
+#### Short script to generate example output with Ramsar names attached - its missing the ACT Ramsar GININI FLATS (45)	
+
+out.dir="/home/jc246980/RAMSAR/ALL_Ramsar_analysis/"	
+voi=c("tmp")
+outdelta=read.csv(paste(out.dir,voi,"_delta_all.csv",sep=''))	 
+colnames(outdelta)[1]="Ramsars"
+RAMinfo = read.dbf('/home/jc246980/RAMSAR/RAMinfonew.dbf')
+RAMinfo=RAMinfo[,c(1,8)]
+RAMinfo=unique(RAMinfo)
+colnames(RAMinfo)[1]="Ramsars"
+outdelta.names=merge(RAMinfo,outdelta,by='Ramsars') # merge with names file
+
+write.csv(outdelta.names,paste(out.dir,"tmp_stability_ramsars_names.csv",sep=''),row.names=T)	
  
  
 ###################################################################################################
-### Determine average stability runoff delta summaries for river basins
- 
-data.dir = "/home/jc246980/Hydrology.trials/Stability/Runoff/Data/"
-wd ="/home/jc246980/Hydrology.trials/Outputs/Output_1976_2005/TomHarwood_data/" # location of current runoff
-load(paste(wd, "Qrun.current_5km_means.Rdata", sep=''))
-Current=as.matrix(rowSums(Qrun))
+### Determine average stability runoff delta summaries for Ramsars
 
-outdelta = matrix(NA,nrow=length(Ramsars),ncol=3*length(ESs)*length(YEARs)); #define the output matrix
-tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt;rownames(outdelta)=Ramsars #add the column names
+###Set up base files at 1km resolution
+wd = '/home/jc246980/RAMSAR/'; setwd(wd) #define and set the working directory
+data.dir="/home/jc246980/Stability/Output/"
+out.dir="/home/jc246980/RAMSAR/ALL_Ramsar_analysis/"
 
-	for (es in ESs) {
-	
-	load(paste(data.dir,es,'_data_runoff.Rdata',sep='')) #load the data
-	tdata=cbind(pos[,1:5],Current)
-	data.runoff=cbind(tdata,data.runoff)
- 
-	 for (ram in Ramsars) { cat(ram,'\n') #cycle through each basin
-		
-				data.runoff.rb = data.runoff[which(data.runoff$Ramsars==ram),] #get the data only for the ramsar of interest
-				mean.runoff.rb=as.data.frame(colMeans(data.runoff.rb)) #		
-				mean.runoffdelta.rb =  mean.runoff.rb #copy annualdata to be replaced with number of standard deviation and percentiles		
-				
-				for (ii in 7:nrow(mean.runoff.rb)) { cat(ii,'...') #cycle through each of the gcm and year combinations
-			
-					mean.runoffdelta.rb[ii,] = mean.runoff.rb[ii,]/(mean.runoff.rb['Current',]+0.000001)#convert to deltas as a proportion
-				}
-				
-				###now create and save the percentiles
+baseasc = read.asc.gz('base.asc.gz');
+pos = as.data.frame(which(is.finite(baseasc),arr.ind=T))
+pos$lat = getXYcoords(baseasc)$y[pos$col]
+pos$lon = getXYcoords(baseasc)$x[pos$row] #append the lat lon
+pos$UID = 1:6978397     
 
-					for (year in YEARs) { cat(year,'\n') #cycle through each of the years 
-						
-						rois = grep(year,rownames(mean.runoffdelta.rb)) #define the columns that intersect the ES & year
-						outquant = t(apply(as.data.frame(mean.runoffdelta.rb[rois,]),2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
-						outdelta[rownames(outdelta)==ram,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
 
-					}
-				
-	    }
-	}
+wd='/home/jc246980/RAMSAR/'
+load(paste(wd,'Area_aggregated_by_ramsar_1km_all.Rdata',sep=''))
+RAMSARS=unique(Ramsar_area_agg$ramsar)
+voi="Accumulated_runoff_delta.csv"
 
-write.csv(outdelta,paste(out.dir,"/Runoff_delta_all.csv",sep=''),row.names=T)	
+outdelta=read.csv(paste(data.dir,voi,sep=''))
+tdata=cbind(pos, outdelta[,-c(1:7)])
+tdata=merge(Ramsar_area_agg,tdata, by="UID", all.x=TRUE)	
+
+table_delta = matrix(NA,nrow=length(RAMSARS)*3,ncol=(3*length(ESs)*length(YEARs))); #define the output matrix
+tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(table_delta) = tt
+tt = expand.grid(c('quant_10', 'quant_50', 'quant_90'),RAMSARS); tt = paste(tt[,2],tt[,1],sep='_'); rownames(table_delta)=tt
+
+for (ram in RAMSARS) { cat(ram,'\n') #cycle through each basin
+
+outdelta_ram = tdata[which(tdata$ramsar==ram),] #get the data only for the rb of interest
+
+outquant = apply(outdelta_ram[,c(10:105)],2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) }) #get the percentiles
+rowname=paste(ram,"_quant_", c(10,50,90), sep='')
+table_delta[rownames(table_delta)==rowname,]=outquant[,]
+
+}; cat('\n')
+
+
+write.csv(table_delta,paste(out.dir,"ram_",voi,"_ALL.csv",sep=''),row.names=T)	
 
  
 
@@ -168,8 +186,8 @@ vois_data=c("num_month","total_severity","max_clust_length", "fut_clust_severity
 
 	for (voi in vois_data){ cat(voi,'\n')
 		
-		outdelta = matrix(NA,nrow=length(RiverBasins),ncol=3*length(ESs)*length(YEARs)); #define the output matrix
-		tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt; rownames(outdelta)=RiverBasins#add the column names
+		outdelta = matrix(NA,nrow=length(Ramsars),ncol=3*length(ESs)*length(YEARs)); #define the output matrix
+		tt = expand.grid(c(10,50,90),YEARs,ESs); tt = paste(tt[,3],tt[,2],tt[,1],sep='_'); colnames(outdelta) = tt; rownames(outdelta)=Ramsars#add the column names
 		outsd = outdelta #copy the outdelta
 		
 		current=paste("current_", voi, sep='')
@@ -181,10 +199,11 @@ vois_data=c("num_month","total_severity","max_clust_length", "fut_clust_severity
 				tdata=get(tdata)
 				temp=cbind(pos[,1:5],current)
 				tdata=cbind(temp,tdata)
+				tdata=merge(Ramsar_area_agg, tdata, by='UID') # merge annual data with Area agg file
 				
-				for (rb in RiverBasins) { cat(rb,'\n')
+				for (ram in Ramsars) { cat(ram,'\n')
 					
-					data.dryseason.rb = tdata[which(tdata$Riverbasin==rb),] #get the data only for the rb of interest
+					data.dryseason.rb = tdata[which(tdata$ramsar==ram),] #get the data only for the ramsar of interest
 					mean_dryseason_rb=as.data.frame(colMeans(data.dryseason.rb))
 					mean_dryseasondelta_rb = mean_dryseasonsd_rb = mean_dryseason_rb #copy annualdata to be replaced with number of standard deviation and percentiles		
 					
@@ -200,9 +219,9 @@ vois_data=c("num_month","total_severity","max_clust_length", "fut_clust_severity
 									 
 							rois = grep(year,rownames(mean_dryseasondelta_rb)) # define the year
 							outquant = t(apply(as.data.frame(mean_dryseasondelta_rb[rois,]),2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
-							outdelta[rownames(outdelta)==rb,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
+							outdelta[rownames(outdelta)==ram,intersect(grep(year,colnames(outdelta)),grep(es,colnames(outdelta)))] = outquant[,] #copy out the data
 							outquant = t(apply(as.data.frame(mean_dryseasonsd_rb[rois,]),2,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) })) #get the percentiles
-							outsd[rownames(outsd)==rb,intersect(grep(year,colnames(outsd)),grep(es,colnames(outsd)))] = outquant[,] #copy out the data
+							outsd[rownames(outsd)==ram,intersect(grep(year,colnames(outsd)),grep(es,colnames(outsd)))] = outquant[,] #copy out the data
 
 					}
 				}

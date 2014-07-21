@@ -17,7 +17,7 @@ tasc[cbind(pos[,'row'],pos[,'col'])] =  pos[,'UID']                             
 # Set up 250 m raster grid with reach identifier appended  and aggregate area by UID's
 
 
-RAMasc = read.asc("/home/jc246980/RAMSAR/ramsar_wetlands_for_download.asc") # load ramsar  asc
+RAMasc = read.asc("/home/jc246980/RAMSAR/ramsar_final.asc") # load ramsar  asc # load ramsar  asc
 pos250 = as.data.frame(which(is.finite(RAMasc),arr.ind=T))        			 # convert asci to position file at 250m resolution 
 pos250$lat = getXYcoords(RAMasc)$y[pos250$col]                     			 # extract and append lats and longs to 250m position file
 pos250$lon = getXYcoords(RAMasc)$x[pos250$row] 
@@ -38,7 +38,7 @@ colnames(Ramsar_area)=c('ramsar', 'Ramsar_area')
 Ramsar_area_agg<- merge(Area_agg, Ramsar_area, by='ramsar')  
 Ramsar_area_agg$weights =Ramsar_area_agg$AREA/Ramsar_area_agg$Ramsar_area 
 wd='/home/jc246980/RAMSAR/'                
-save(Ramsar_area_agg,file=paste(wd,'Area_aggregated_by_ramsar_1km.Rdata',sep=''))           # Save files out
+save(Ramsar_area_agg,file=paste(wd,'Area_aggregated_by_ramsar_1km_all.Rdata',sep=''))           # Save files out
 
 
 

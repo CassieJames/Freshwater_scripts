@@ -1,7 +1,8 @@
 ###################################################################################################
 ### Script to setup current files for MAXENT run trials
-
-library(SDMTools) #define the libraries needed
+args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #retireve and evaluate the arguments
+library(SDMTools)
+library(maptools) #define the libraries needed
 
 ### set up input data
 hydro=read.csv("/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/Current_dynamic.csv") # read in accumulated flow
@@ -11,9 +12,9 @@ dryseason.dir="/home/jc246980/DrySeason/DrySeason_reach/"
 VOIS=c("num.month", "total.severity", "max.clust.length","clust.severity", "month.max.clust")
 
 terrain = read.dbf('/home/jc246980/Janet_Stein_data/Terrain.dbf')
-cois=c('SEGMENTNO', 'VALLEYSLOP', 'STRELEMEAN','D2OUTLET')
+cois=c('SEGMENTNO', 'VALLEYSLOP', 'CATSLOPE','D2OUTLET')
 terrain_sub=terrain[,cois]
-colnames(terrain_sub)=("SegmentNo", "Segslope", "Segelev", "d2outlet")
+colnames(terrain_sub)=c("SegmentNo", "Segslope", "Catslope", "d2outlet")
 
 out = bioclim; out$lat = out$lon = out$SegmentNo; out = out[,c('SegmentNo','lat','lon',colnames(bioclim)[-1])] #define the output data replicating segment number as lat and lon
 
@@ -34,4 +35,4 @@ if (voi==VOIS[1]) Enviro_dat=tdata else Enviro_dat=merge(Enviro_dat,tdata)
 out = merge(out,Enviro_dat); out = merge(out,HYDROLOGY) #fully define the output
 out=merge(out,terrain_sub)
 
-current = out; save(current,file='/home/jc165798/working/NARP_FW_SDM/current_enviro_data.Rdata') #write out the data
+current = out; save(current,file='/home/jc246980/SDM/current_enviro_data.Rdata') #write out the data
