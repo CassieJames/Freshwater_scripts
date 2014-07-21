@@ -5,10 +5,7 @@
 ### read in the necessary info
 args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #retireve and evaluate the arguments
 library(maptools)
-##eg. data
-# es='RCP85'
-# gcm='cccma-cgcm31'
-# yy='2085'
+
 
 ################################################################################
 # Set up directories
@@ -16,22 +13,22 @@ accum.dir = "/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qr
 runoff.dir="/home/jc246980/Hydrology.trials/Aggregate_reach/Output_futures/Qrun_aggregated2reach_1976to2005/"
 bioclim.dir ="/home/jc246980/Climate/5km/Future/Bioclim_reach/"
 dryseason.dir = "/home/jc246980/DrySeason/DrySeason_reach/"
-basedir = '/home/jc165798/working/NARP_FW_SDM/'
+basedir = '/home/jc246980/SDM/raw_data/'
 out.dir='/home/jc246980/SDM/Environmental_future/'
 terrain = read.dbf('/home/jc246980/Janet_Stein_data/Terrain.dbf')
 cois=c('SEGMENTNO', 'VALLEYSLOP', 'CATSLOPE','D2OUTLET')
 terrain_sub=terrain[,cois]
-colnames(terrain_sub)=("SegmentNo", "Segslope", "Catslope", "d2outlet")
+colnames(terrain_sub)=c("SegmentNo", "Segslope", "Catslope", "d2outlet")
 
 ###load in necessary data
-if (file.exists(paste(basedir,'raw_data/current_flow_data_for_future.Rdata',sep=''))) {
-load(paste(basedir,'raw_data/current_flow_data_for_future.Rdata',sep='')) #load in the current data
+if (file.exists(paste(basedir,'current_flow_data_for_future.Rdata',sep=''))) {
+load(paste(basedir,'current_flow_data_for_future.Rdata',sep='')) #load in the current data
 } else { #create the necessary current dataset
 current_dynamic=read.csv("/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/Current_dynamic.csv")
 current_static=read.csv("/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futures/Qrun_accumulated2reach_1976to2005/Current_static.csv")
 currents=cbind(current_dynamic,current_static[,-1]) #the two current runoff files are in the same order by SegmentNo and can therefore be joined with cbind
 rm(list=c("current_dynamic","current_static"));gc()
-save(currents,file=paste(basedir,'raw_data/current_flow_data_for_future.Rdata',sep='')) #save out the data
+save(currents,file=paste(basedir,'current_flow_data_for_future.Rdata',sep='')) #save out the data
 }
 bioclim = read.csv(paste(bioclim.dir,es,"_",gcm,".csv", sep='')) #read in the bioclim data
 for (tt in paste('bioclim_',sprintf('%02i',c(1,4:11)),sep="")) { cat(tt,'\n') #round temperature where appropriate

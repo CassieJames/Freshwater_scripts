@@ -1,6 +1,6 @@
 ###################################################################################################
 ### Script to setup current files for MAXENT run trials
-args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #retireve and evaluate the arguments
+
 library(SDMTools)
 library(maptools) #define the libraries needed
 

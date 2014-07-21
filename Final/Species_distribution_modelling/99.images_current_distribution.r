@@ -13,10 +13,11 @@
     cols=cols[50:1]	
 	Drainageshape = readShapePoly('/home/jc246980/Janet_Stein_data/Level2Catchments/NCBLevel2Drainage.shp') #read in your shapefile
 	
-	load(paste(wd,spp,".cur.real.mat.Rdata", sep='')) # Current		
-	species.name=sub(".cur.real.mat.Rdata","", spp)
+	species.name=sub(".cur.real.mat.Rdata","", spp)	
+	load(paste(wd,spp, sep='')) # Current		
+
 	
-	png(paste(image,species.name,'_current.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+	png(paste(image,species.name,'_current_July17.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
 	mat = matrix(c( 3,2,2,2,
 					  1,1,1,1,
 					  1,1,1,1,

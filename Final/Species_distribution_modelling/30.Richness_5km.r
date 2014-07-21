@@ -1,7 +1,11 @@
+#Script to determine species richness - adapted from script of Laurens and JV
+# C James
+# July 2014
+
+library(SDMTools); library(parallel)
 
 #### Determine current and future species richness
-	library(parallel)
-	
+
 	taxa = c("fish", "crayfish","frog","turtles")
 	tax = taxa[4]	
 	ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
@@ -42,7 +46,7 @@ for (spp in species) { print(spp)
 save(Richness_future,file=paste(out.dir,es,'.Richness_future.mat.Rdata',sep=''))	
 
 
-# deteremine qantiles of future richness
+# determine quantiles of future richness
 
 out.dir = '/home/jc246980/SDM/Richness/'; setwd(out.dir)
 taxa = c("fish", "crayfish","frog","turtles")

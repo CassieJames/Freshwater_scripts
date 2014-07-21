@@ -4,18 +4,15 @@
 
 
 sdm.dir = '/home/jc246980/SDM/'; setwd(sdm.dir)
-taxa=c('fish','crayfish','turtles','All_frog'); tax=taxa[3] #change as appropriate
+taxa=c('fish','crayfish','turtles','All_frog'); tax=taxa[4] #change as appropriate
 work.dir=paste(sdm.dir,'models_',tax,"/",sep="") ; setwd(work.dir)
-image.dir=paste('/home/jc246980/SDM/Realized_current/Images/',tax,'/Unrestricted/',sep='')
-sh.dir='/home/jc246980/SDM/Realized_current/Images/temp/'; 
+image.dir=paste('/home/jc246980/SDM/Realized_current/Images/All_frog/Unrestricted/',sep='')
+sh.dir='/home/jc246980/SDM/Realized_current/Images/temp/'; setwd(sh.dir)
 
-# Code for frogs
-#unrestrict=read.csv("/home/jc246980/SDM/Frogs_underpredicted.csv")
-#species=unrestrict[,1]
-species = list.files() #get a list of all the species
+unrestrict=read.csv("/home/jc246980/SDM/Frogs_underpredicted.csv")
+species=unrestrict[,1]
+
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/999.images_current_distribution_unrestricted.r'
-
-setwd(sh.dir)
 
 for (spp in species) {
 

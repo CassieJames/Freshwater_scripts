@@ -4,37 +4,30 @@
 taxa=c('fish','crayfish','turtles','frog')
 taxon=taxa[1] #change as appropriate
 taxname=sub(substr(taxon,1,1),toupper(substr(taxon,1,1)),taxon)
+
+
 occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_masterV2.Rdata",sep='') #give the full file path of your species data
 
 basedir='/home/jc246980/SDM/'
-env.file=paste(basedir,"current_enviro_data.Rdata",sep='')
+env.file=paste(basedir,"current_1990.Rdata",sep='')
 maxent.jar = "/home/jc246980/SDM/maxent.jar" #define the location of the maxent.jar file
-wd=paste("/home/jc246980/SDM/models_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
+wd=paste("/home/jc246980/SDM/models_All_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
 projdir = paste(basedir,'Environmental_future/',sep='') #define the projection directory
 projs = list.files(projdir) #get a list of the projections
 ########################################################################################################
 
 load(env.file) #read in evirodata
 ##########run only the first time
-for (tt in paste('bioclim_',sprintf('%02i',c(1:11)),sep="")) { cat(tt,'\n') #round temperature where appropriate
+for (tt in paste('bioclim_',sprintf('%02i',c(1,4:11)),sep="")) { cat(tt,'\n') #round temperature where appropriate
 cois = grep(tt,colnames(current)); current[,cois] = round(current[,cois],1)
 }
 for (tt in paste('bioclim_',sprintf('%02i',c(12:14,16:19)),sep="")) { cat(tt,'\n')#round precip where appropriate
  cois = grep(tt,colnames(current)); current[,cois] = round(current[,cois])
 }
-
-for (tt in paste('bioclim_',sprintf('%02i',c(15)),sep="")) { cat(tt,'\n')#round precip where appropriate
- cois = grep(tt,colnames(current)); current[,cois] = round(current[,cois],3)
-}
-
-for (tt in paste('bioclim_',sprintf('%02i',c(120:22)),sep="")) { cat(tt,'\n')#round precip where appropriate
- cois = grep(tt,colnames(current)); current[,cois] = round(current[,cois],0)
-}
-
 save(current,file=paste(basedir,'current_1990.Rdata',sep='')) #write out the full current dataset
 write.csv(current,paste(projdir,'current_1990.csv',sep=''), row.names=FALSE) #write out the full current dataset
 
-current = current[,c('SegmentNo','lat','lon',paste('bioclim_',sprintf('%02i',c(1:19)),sep=''),'max.clust.length','clust.severity','Flow_accum_annual', 'Segslope', 'Catslope', 'd2outlet')] #keep only variables of interest
+current = current[,c('SegmentNo','lat','lon',paste('bioclim_',sprintf('%02i',c(1,4,5,6,12,15,16,17)),sep=''),'max.clust.length','clust.severity','Flow_accum_annual', 'Segslope', 'Catslope', 'd2outlet')] #keep only variables of interest
 load(occur.file); #load in the occur
 species=colnames(occur)[-1] #get a list of the species
 
@@ -42,7 +35,7 @@ tt = unique(round(c(which(rowSums(occur[,-1])>=1),runif(20000,1,nrow(current))))
 bkgd = current[tt,]; write.csv(bkgd,paste('../bkgd_',taxon,'.csv',sep=''),row.names=FALSE) #write out the background points
 
 for (spp in species) {cat(spp,'\n')
-if (length(which(occur[,spp]>0)) > 5) { #model species where count is greater than 5
+if (length(which(occur[,spp]>0)) >= 5) { #model species where count is greater than 5
 toccur = current[which(current$SegmentNo %in% occur[which(occur[,spp]>0),'SegmentNo']),] #get segment number for the species
 toccur$SegmentNo=spp #reset the values the species column of the occur file
 spp.dir = paste(wd,spp,'/',sep='') #define the species directory
@@ -60,6 +53,7 @@ cat('cp -af output/maxentResults.csv output/maxentResults.crossvalide.csv\n',fil
 cat('java -mx2048m -jar ',maxent.jar,' -e ',basedir,'bkgd_',taxon,'.csv -s occur.csv -o output nothreshold nowarnings novisible nowriteclampgrid nowritemess writeplotdata -P -J -r -a \n',sep="",file=zz) #run a full model to get the best parameterized model for projecting
 for (tproj in projs) cat('java -mx2048m -cp ',maxent.jar,' density.Project ',spp.dir,'output/',spp,'.lambdas ',projdir,tproj,' ',spp.dir,'output/potential/',tproj,' fadebyclamping nowriteclampgrid\n',sep="",file=zz) #do the projections
 close(zz)
-setwd(spp.dir); system(paste('qsub -m n 01.',spp,'.model.sh',sep='')); setwd(wd) #submit the script
+setwd(spp.dir); system(paste('qsub -m n 01.',spp,'.model.sh -l pmem=8500mb -l walltime=24:00:00 -l nodes=1:ppn=1', sep='')); setwd(wd) #submit the script
 }
 }
+

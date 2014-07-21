@@ -66,9 +66,9 @@ save(distdata,file=paste(out,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(distdata
 if (clip.column=="Clip2Bio") {
 
 regions2add=regions2add[!is.na(regions2add)]
-SegmentNo2add=clip$SegmentNo[which(clip[,2] %in% regions2add)] # work out which segments are in the regions to add
+SegmentNo2add=clip$SegmentNo[which(clip[,clip.column] %in% regions2add)] # work out which segments are in the regions to add
 regions2subtract=regions2subtract[!is.na(regions2subtract)]
-SegmentNo2subtract=clip$SegmentNo[which(clip[,2] %in% regions2subtract)]  # work out the segments to remove 
+SegmentNo2subtract=clip$SegmentNo[which(clip[,clip.column] %in% regions2subtract)]  # work out the segments to remove 
 
 SegmentNo=clip$SegmentNo[which(clip[,clip.column] %in% regions)] #find the segment nos within those regions
 SegmentNo=c(SegmentNo, SegmentNo2add)

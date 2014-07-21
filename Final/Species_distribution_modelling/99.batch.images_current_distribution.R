@@ -19,7 +19,7 @@ wd=(paste('/home/jc246980/SDM/Realized_current/',tax,'/Clipped2Basin/',sep=''))
 
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/99.images_current_distribution.r'
 
-species=species[1:4]
+
 for (spp in species) {
 
 
