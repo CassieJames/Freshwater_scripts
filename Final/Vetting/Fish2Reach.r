@@ -24,9 +24,6 @@ write.csv(Fish,paste("/home/jc246980/Species_data/NorthernOZFish/MarkK_data/",sp
 }
 
 
-
-
-
 database.dir="/home/jc246980/Species_data/NorthernOZFish/"
 fishdata = read.csv(paste(database.dir, '/',"Fish Gilbert and Flinders.csv",sep=''))
 species=colnames(fishdata[1,8:ncol(fishdata)])
@@ -41,7 +38,16 @@ Fish[which(Fish$Count>1),3] <- 1
 write.csv(Fish,paste("/home/jc246980/Species_data/NorthernOZFish/FGARA_records/",sub(" ", "_",sp),".csv", sep = ''), row.names = F )
  }
 
+database.dir="/home/jc246980/Species_data/NorthernOZFish/"
+fishdata = read.csv(paste(database.dir, '/',"Tasmanian_museum_fish_data.csv",sep=''))
+species=unique(fishdata$Matched.Scientific.Name)
 
+for (sp in species) { cat(sp,'\n')
+Fish <- fishdata[which(fishdata$Matched.Scientific.Name ==sp),]
+write.csv(Fish,paste("/home/jc246980/Species_data/NorthernOZFish/Tasmaniam_museum_fish/",sub(" ", "_",sp),".csv", sep = ''), row.names = F )
+ }
+
+ 
 ### Merge various sources of species info and create a single file for each species
 
 fishdata.dir = "/home/jc246980/Species_data/ALA_downloads/Data/Fish/" # fish point data directory from ALA
@@ -50,12 +56,14 @@ fishadded="/home/jc246980/Species_data/NorthernOZFish/Additional_Data/"
 fishQLD="/home/jc246980/Species_data/NorthernOZFish/QLDmuseum/"
 fishMarkK="/home/jc246980/Species_data/NorthernOZFish/MarkK_data/"
 fishFGARA="/home/jc246980/Species_data/NorthernOZFish/FGARA_records/"
+fishTas="/home/jc246980/Species_data/NorthernOZFish/Tasmaniam_museum_fish/"
 
 species=list.files(fishdata.dir, pattern=".csv")
 species2=list.files(fishatlas.dir)
 species3=list.files(fishadded)
 species5=list.files(fishMarkK)
 species4=list.files(fishQLD)
+species6=list.files(fishTas)
 full.list=unique(c(species, species2, species3, species5))
 
 #out.dir="/home/jc246980/Species_data/All_Fish/With_data_origin/"
@@ -123,11 +131,20 @@ write.csv(full.list,paste(out.dir,'Fish_full_list_March11.csv',sep=''),row.names
 				
 		} 
 		
+				if(file.exists(paste(fishTas,"/", full.list[sp],sep=''))){
+				species.data.add=read.csv(paste(fishTas,"/",full.list[sp],sep=''))
+				species.data.latdec=as.data.frame(species.data.add$Latitude...processed)
+				species.data.longdec=species.data.add$Longitude...processed
+				datarecords7=cbind(species.data.latdec,species.data.longdec)
+				datarecords7$origin="TasData"
+				colnames(datarecords7)=c("Lat", "Long", "Origin")				
+				
+		} 
 		
 		
-		filenames <- c("datarecords1","datarecords2","datarecords3","datarecords4","datarecords5","datarecords6" )
+		filenames <- c("datarecords1","datarecords2","datarecords3","datarecords4","datarecords5","datarecords6","datarecords7" )
 		dt <- rbind.fill(mget(Filter(exists, filenames),envir = globalenv()))
-		rm("datarecords1","datarecords2","datarecords3","datarecords4","datarecords5","datarecords6" )
+		rm("datarecords1","datarecords2","datarecords3","datarecords4","datarecords5","datarecords6","datarecords7" )
 		write.csv(dt,paste(out.dir,speciesname,".csv",sep=''),row.names=F)
 		
 }
@@ -138,17 +155,17 @@ write.csv(full.list,paste(out.dir,'Fish_full_list_March11.csv',sep=''),row.names
 load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')	
 out.dir="/home/jc246980/Species_data/Reach_data/"	
-Fish_data = matrix(NA, nrow=nrow(networkatts), ncol=365)
+Fish_data = matrix(NA, nrow=nrow(networkatts), ncol=366)
 Fish_data [,1] <- networkatts[,9]
-speciesname=gsub('.csv','',full.list)		
-colnames(Fish_data)=c("SegmentNo", speciesname)
 wd="/home/jc246980/Species_data/All_Fish/";setwd(wd)
 out.dir="/home/jc246980/Species_data/All_Fish/"	
-
+full.list=grep('.csv',list.files(wd),value=T)
+speciesname=gsub('.csv','',full.list)	
+colnames(Fish_data)=c("SegmentNo", speciesname)
 
 	for (sp in 1:length(full.list)) { cat(full.list[sp],'\n')
 		speciesname=gsub('.csv','',full.list[sp])
-		dt=read.csv(paste(out.dir,"/",full.list[sp],sep=''))
+		dt=read.csv(paste(out.dir,full.list[sp],sep=''))
 		SegmentNo_SP_Present  = extract.data(cbind(dt$Long,dt$Lat),CatchmentRaster.asc) # extract Segment number from Catchment raster
 		SegmentNo_SP_Present=unique(na.omit(SegmentNo_SP_Present))
 		Fish_data=as.data.frame(Fish_data)
@@ -157,74 +174,32 @@ out.dir="/home/jc246980/Species_data/All_Fish/"
 		
 	}
 
-write.csv(Fish_data,paste(out.dir,'Fish_reach_Feb14.csv',sep=''),row.names=F)
-
-###Script to merge subspecies to species and create a master list
-
-tdata=read.csv("/home/jc246980/Species_data/Reach_data/Fish_reach_Feb14.csv")
-soi=c("Mugilogobius_filifer")
-
-temp=tdata[,grep(soi,colnames(tdata))]
-temp2=tdata[,grep("SegmentNo",colnames(tdata))]
-temp3=as.data.frame(cbind(temp2, temp))
-temp4=temp3[which(temp3$temp2==365644),]
-
-### Merge subspecies Melanotaenia
-
-# temp=tdata[,intersect(grep("Melanotaenia",colnames(tdata)),grep("australis",colnames(tdata)))]
-# temp$Melanotaenia_australis_master=apply(temp, 1, sum)
-# temp[temp$Melanotaenia_australis_master>0,3] <-1
-
-# tdata[,grep("Melanotaenia_australis", colnames(tdata))] = temp$Melanotaenia_australis_master # replace M. australis data with master data
-
-# soi="Melanotaenia_splendida.australis"
-# tdata=tdata[,-grep(soi,colnames(tdata)) ] # delete old sub species column
-
-# soi = "Melanotaenia_splendida"
-# temp=tdata[,grep(soi,colnames(tdata))]	
-# temp$Melanotaenia_splendida_master=apply(temp, 1, sum)
-# temp[temp$Melanotaenia_splendida_master>0,5] <-1
-
-# soi="Melanotaenia_splendida"	
-# tdata[,grep(soi, colnames(tdata))][1] = temp$Melanotaenia_splendida_master # replace M. splendida data with new master data with sub species merged
-
-### Sort out spelling issues with Oxyeleotris_lineolata
-
-temp=tdata[,intersect(grep("eleotris",colnames(tdata)),grep("lineolatus",colnames(tdata)))]
-
-temp$Oxyeleotris_lineolata=apply(temp, 1, sum)
-temp[temp$Oxyeleotris_lineolata>0,3] <-1
-
-tdata$Oxyeleotris_lineolatus= temp$Oxyeleotris_lineolata# replace  data with master data
-tdata=tdata[,-grep("Ocyeleotris_lineolatus",colnames(tdata)) ] # delete wrong named species column
-tdata=tdata[,-grep("Oxyeleotris_lineolatus",colnames(tdata)) ] # delete wrong named species column
+write.csv(Fish_data,paste(out.dir,'Fish_reach_July_21_2014.csv',sep=''),row.names=F)
+tdata=Fish_data
+#tdata=read.csv("/home/jc246980/Species_data/All_Fish/Fish_reach_July_21_2014.csv")
 
 ### Sort out spelling issues with Hephaestus spp
 
 temp=tdata[,intersect(grep("Hep",colnames(tdata)),grep("epirrhinos",colnames(tdata)))]
 temp$Hephaestus_epirrhinos=apply(temp, 1, sum)
 temp[temp$Hephaestus_epirrhinos>0,1] <-1
-
-tdata$Hephaestus_epirrhinos= temp$Hephaestus_epirrhinos# replace M. australis data with master data
+tdata$Hephaestus_epirrhinos= temp$Hephaestus_epirrhinos# replace with master data
 tdata=tdata[,-grep("Hepahestus_epirrhinos",colnames(tdata)) ] # delete wrong named species column
-
 
 temp=tdata[,intersect(grep("Hephae",colnames(tdata)),grep("fuliginosus",colnames(tdata)))]
 temp$Hephaestus_fuliginosus=apply(temp, 1, sum)
 temp[temp$Hephaestus_fuliginosus>0,1] <-1
-
 tdata$Hephaestus_fuliginosus= temp$Hephaestus_fuliginosus# replace M. australis data with master data
 tdata=tdata[,-grep("Hephaetus_fuliginosus",colnames(tdata)) ] # delete wrong named species column
-
 
 out.dir="/home/jc246980/Species_data/Reach_data/"
 save(tdata,file=paste(out.dir,"Fish_reach_master.Rdata",sep=''))
 
 ### remove segments with no records, exotics and estuarine species
 
-exotics=read.csv("/home/jc246980/Species_data/Fish.exclude.csv")
-exotics=exotics[,1]
-### Fish
+exotics=read.csv("/home/jc246980/SDM/fish.to.exclude.csv")
+exotics <- exotics[which(exotics[,"action"] =="exclude"),1]
+
 occur.file="/home/jc246980/Species_data/Reach_data/Fish_reach_master.Rdata" #give the full file path of your species data
 occur=load(occur.file)
 occur=get(occur) #rename species occurrence data to 'occur'
