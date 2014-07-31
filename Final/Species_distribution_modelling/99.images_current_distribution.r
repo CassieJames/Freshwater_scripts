@@ -12,12 +12,11 @@
 	cols=colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF"))(50)
     cols=cols[50:1]	
 	Drainageshape = readShapePoly('/home/jc246980/Janet_Stein_data/Level2Catchments/NCBLevel2Drainage.shp') #read in your shapefile
-	
 	species.name=sub(".cur.real.mat.Rdata","", spp)	
 	load(paste(wd,spp, sep='')) # Current		
 
 	
-	png(paste(image,species.name,'_current_July17.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+	png(paste(image,species.name,'_current_July30.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
 	mat = matrix(c( 3,2,2,2,
 					  1,1,1,1,
 					  1,1,1,1,
@@ -25,11 +24,11 @@
     layout(mat) #call layout as defined above
 
 	pos=tpos
-	pos=merge(pos,distdata, by='SegmentNo',all.x=TRUE)
-	zlim=c(min(pos$Current[which(pos$Current>0)],na.rm=T),max(c(pos$Current),na.rm=T))
+	pos=merge(pos,real.mat, by='SegmentNo',all.x=TRUE)
+	zlim=c(min(pos$current_1990[which(pos$current_1990>0)],na.rm=T),max(c(pos$current_1990),na.rm=T))
 	image(base.asc,ann=F,axes=F,col='grey')
 	
-	tasc=make.asc(pos[,'Current'])
+	tasc=make.asc(pos[,'current_1990'])
 	image(tasc,ann=F,axes=F,col=cols,zlim=zlim, add=TRUE)
 	plot(Drainageshape , lwd=10, ann=FALSE,axes=FALSE, add=TRUE)
 	

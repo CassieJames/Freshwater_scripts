@@ -3,7 +3,7 @@
 
 ################################################################################
 
-wd = '/home/jc246980/SDM/models_All_frog/'; setwd(wd)
+wd = '/home/jc246980/SDM/models_All_fish/'; setwd(wd)
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/04.script2run.r'
 
 species = list.files() #get a list of all the species
@@ -23,6 +23,6 @@ cat("R CMD BATCH --no-save --no-load '--args ",spp.arg,wd.arg,"' ",script.file,'
 close(zz)
 
 #submit the job
-system(paste('qsub -m n -N ',spp,' -l nodes=1:ppn=3 04.create.pot.mat.sh',sep=''))
+system(paste('qsub -m n -N ',spp,' -l pmem=1000mb -l walltime=24:00:00 -l nodes=1:ppn=3 -l epilogue=/home/jc246980/epilogue/epilogue.sh 04.create.pot.mat.sh',sep=''))
 }
 
