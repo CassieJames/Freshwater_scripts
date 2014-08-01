@@ -11,7 +11,7 @@ occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_maste
 basedir='/home/jc246980/SDM/'
 env.file=paste(basedir,"current_1990.Rdata",sep='')
 maxent.jar = "/home/jc246980/SDM/maxent.jar" #define the location of the maxent.jar file
-wd=paste("/home/jc246980/SDM/models_All_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
+wd=paste("/home/jc246980/SDM/models_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
 projdir = paste(basedir,'Environmental_future/',sep='') #define the projection directory
 projs = list.files(projdir) #get a list of the projections
 ########################################################################################################

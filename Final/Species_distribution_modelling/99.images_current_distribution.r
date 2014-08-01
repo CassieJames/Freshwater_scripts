@@ -2,7 +2,7 @@
 # C James February 2013
 	args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]])) } #retrieve and evaluate the arguments
 	
-	source('/home/jc148322/scripts/libraries/cool_functions.r')
+	source('/home/jc148322/scripts/libraries/cool_functions.r') # make pos function here!
 	library(SDMTools);library(plotrix); library(maptools)
 	
 	base.asc = read.asc.gz(paste('/home/jc148322/NARPfreshwater/SDM/SegmentNo_1km.asc.gz',sep='')) #read in the base asc file
@@ -16,19 +16,20 @@
 	load(paste(wd,spp, sep='')) # Current		
 
 	
-	png(paste(image,species.name,'_current_July30.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+	png(paste(image.dir,species.name,'_current_1August.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
 	mat = matrix(c( 3,2,2,2,
-					  1,1,1,1,
-					  1,1,1,1,
-					  1,1,1,1),nr=4,nc=4,byrow=TRUE) #create a layout matrix for images
+					1,1,1,1,
+					1,1,1,1,
+					1,1,1,1),nr=4,nc=4,byrow=TRUE) #create a layout matrix for images
     layout(mat) #call layout as defined above
 
 	pos=tpos
-	pos=merge(pos,real.mat, by='SegmentNo',all.x=TRUE)
-	zlim=c(min(pos$current_1990[which(pos$current_1990>0)],na.rm=T),max(c(pos$current_1990),na.rm=T))
+	pos=merge(pos,distdata, by='SegmentNo',all.x=TRUE)
+	zlimits_current=pos$Current[which(pos$Current>0)]
+	zlim=c(min(zlimits_current,na.rm=TRUE),max(zlimits_current,na.rm=T))
 	image(base.asc,ann=F,axes=F,col='grey')
 	
-	tasc=make.asc(pos[,'current_1990'])
+	tasc=make.asc(pos[,'Current'])
 	image(tasc,ann=F,axes=F,col=cols,zlim=zlim, add=TRUE)
 	plot(Drainageshape , lwd=10, ann=FALSE,axes=FALSE, add=TRUE)
 	

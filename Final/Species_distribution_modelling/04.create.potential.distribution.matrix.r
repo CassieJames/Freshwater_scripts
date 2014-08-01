@@ -3,7 +3,10 @@
 
 ################################################################################
 
-wd = '/home/jc246980/SDM/models_All_fish/'; setwd(wd)
+taxa = c("fish", "crayfish","frog","turtles")
+tax = taxa[1]	
+wd = paste('/home/jc246980/SDM/models_',tax,"/",sep=""); setwd(wd)
+
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/04.script2run.r'
 
 species = list.files() #get a list of all the species

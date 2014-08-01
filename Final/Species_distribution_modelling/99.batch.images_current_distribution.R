@@ -4,22 +4,22 @@
 
 
 taxa=c('fish','crayfish','turtles','All_frog'); tax=taxa[1] #change as appropriate
-image.dir=paste('/home/jc246980/SDM/Realized_current/Images/',tax,'/Clip2RB/',sep='')
-sh.dir='/home/jc246980/SDM/Realized_current/Images/temp/'; setwd(sh.dir)
-wd=paste('/home/jc246980/SDM/Realized_current/',tax,'/Clipped2Basin/RCP85/',sep=''); setwd(wd)
-
-species = list.files() #get a list of all the species
-
+image.dir=paste('/home/jc246980/SDM/Realized/Images/',tax,'/Clip4North/',sep='')
+wd=paste('/home/jc246980/SDM/Realized/',tax,'/Clip4North/',sep=''); setwd(wd)
+files=list.files(wd)
+species=files[grep('cur.real.mat',files)]
+sh.dir='/home/jc246980/SDM/Realized/Images/temp/'; setwd(sh.dir)
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/99.images_current_distribution.r'
 
-
+ESs=c('RCP3PD','RCP45','RCP6','RCP85')
+es="RCP85"
 
 for (spp in species) {
 
 
 spp.arg = paste('spp="',spp,'" ',sep='') # species argument
 wd.arg = paste('wd="',wd,'" ',sep='') # working directory argument
-image.arg=paste('image="',image.dir,'" ',sep='') # image directory argument
+image.arg=paste('image.dir="',image.dir,'" ',sep='') # image directory argument
 es.arg = paste('es="',es,'" ',sep='')
 
 zz = file('99.images_current_distribution.sh','w') ##create the sh file
@@ -31,7 +31,7 @@ cat("R CMD BATCH --no-save --no-load '--args ",spp.arg,wd.arg,image.arg,es.arg,"
 close(zz)
 
 #submit the job
-system(paste('qsub -m n -N ',spp,' 99.images_current_distribution.sh -l pmem=2500mb -l nodes=1:ppn=3  -l walltime=00:12:00',sep=''))
+system(paste('qsub -m n -N ',spp,' 99.images_current_distribution.sh -l pmem=2500mb -l nodes=1:ppn=3  -l walltime=12:00:00 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
 Sys.sleep(5)
 }
 
