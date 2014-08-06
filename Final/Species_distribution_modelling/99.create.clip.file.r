@@ -2,8 +2,8 @@
 
 library(SDMTools); library(maptools) #load the necessary library
 
-catchrast=load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
-bioregions = read.asc("/home/jc246980/SDM/fishbioregions.asc")
+catchrast=load("/home/jc246980/Obsolete/Hydrology.trials/Catchmentraster250.Rdata")
+bioregions = read.asc("/home/jc246980/SDM/fishbio.asc")
 riverbasins = read.asc("/home/jc246980/SDM/riverbasin.asc")
 
 pos250 = as.data.frame(which(is.finite(CatchmentRaster.asc),arr.ind=T))        			 # convert asci to position file at 250m resolution 

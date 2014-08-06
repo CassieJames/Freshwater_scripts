@@ -41,9 +41,6 @@ regions2add=as.data.frame(strsplit(regions2add, ",")[[1]])
 colnames(regions2add)="additions"
 regions2add=as.numeric(levels(regions2add$additions))[regions2add$additions]
 
-regions=unique(clip[which(clip$SegmentNo %in% occur$lat),clip.column])#find the regions in which species has been observed - this will be fish provinces for fish, and level 2 basins for other taxa. Remember that occur$lat is actually SegmentNo
-
-
 clip.ID=clip.species[,"Internal_Drainage_issue"]
 clip.ID[is.na(clip.ID)] <- 0 # assign zero to NA to get rid of it as won't work in condition statements like 'if'
   
@@ -54,27 +51,29 @@ distdata[which((distdata[,'SegmentNo'] %in% internal_draining_segments$SEGMENTNO
 
 if (clip.column=="Clip2RB") {
 
+regions=unique(clip[which(clip$SegmentNo %in% occur$lat),"Clip2RB"])#find the regions in which species has been observed - this will be fish provinces for fish, and level 2 basins for other taxa. Remember that occur$lat is actually SegmentNo
 regions=c(regions, regions2add)
 regions=regions[which(!(regions %in% regions2subtract))]   
 regions=regions[!is.na(regions)]
 SegmentNo=clip$SegmentNo[which(clip[,clip.column] %in% regions)] #find the segment nos within those regions
 distdata[which(!(distdata[,'SegmentNo'] %in% SegmentNo)),spp]=0 #apply the clip
 colnames(distdata)=c('SegmentNo','Current')
-save(distdata,file=paste(out,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(distdata); gc() #write out the data		
+save(distdata,file=paste(out.dir,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(distdata); gc() #write out the data		
 }
 
 if (clip.column=="Clip2Bio") {
 
+regions=unique(clip[which(clip$SegmentNo %in% occur$lat),"Clip2Bio"])
 regions2add=regions2add[!is.na(regions2add)]
-SegmentNo2add=clip$SegmentNo[which(clip[,clip.column] %in% regions2add)] # work out which segments are in the regions to add
+SegmentNo2add=clip$SegmentNo[which(clip[,"Clip2RB"] %in% regions2add)] # work out which segments are in the regions to add
 regions2subtract=regions2subtract[!is.na(regions2subtract)]
-SegmentNo2subtract=clip$SegmentNo[which(clip[,clip.column] %in% regions2subtract)]  # work out the segments to remove 
+SegmentNo2subtract=clip$SegmentNo[which(clip[,"Clip2RB"] %in% regions2subtract)]  # work out the segments to remove 
 
-SegmentNo=clip$SegmentNo[which(clip[,clip.column] %in% regions)] #find the segment nos within those regions
+SegmentNo=clip$SegmentNo[which(clip[,"Clip2Bio"] %in% regions)] #find the segment nos within those regions
 SegmentNo=c(SegmentNo, SegmentNo2add)
 SegmentNo=SegmentNo[which(!(SegmentNo %in% SegmentNo2subtract))]   
 distdata[which(!(distdata[,'SegmentNo'] %in% SegmentNo)),spp]=0 #apply the clip
 colnames(distdata)=c('SegmentNo','Current')
-save(distdata,file=paste(out,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(distdata); gc() #write out the data		
+save(distdata,file=paste(out.dir,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(distdata); gc() #write out the data		
 
 }	

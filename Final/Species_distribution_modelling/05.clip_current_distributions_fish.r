@@ -17,7 +17,7 @@ for (spp in species) {
 spp.folder = paste(wd,spp,"/",sep=""); setwd(spp.folder) #define and set the species folder
 spp.arg = paste('spp="',spp,'" ',sep='') # species argument
 wd.arg = paste('wd="',wd,'" ',sep='') # working directory argument
-out.arg=paste('out="',out.dir,'" ',sep='') # out directory argument
+out.arg=paste('out.dir="',out.dir,'" ',sep='') # out directory argument
 
 
 zz = file('04.clip_north_fish.sh','w') ##create the sh file
@@ -29,8 +29,8 @@ cat("R CMD BATCH --no-save --no-load '--args ",spp.arg,wd.arg,out.arg,"' ",scrip
 close(zz)
 
 #submit the job
-system(paste('qsub -m n -N ',spp,' 04.clip_north_fish.sh -l pmem=1000mb -l walltime=00:12:00 -l nodes=1:ppn=3 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
-Sys.sleep(5)
+system(paste('qsub -m n -N ',spp,' 04.clip_north_fish.sh -l pmem=1000mb -l walltime=00:01:00 -l nodes=1:ppn=3 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
+Sys.sleep(2)
 
 }
 

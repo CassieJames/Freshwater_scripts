@@ -32,6 +32,6 @@ close(zz)
 
 #submit the job
 system(paste('qsub -m n -N ',spp,' 99.images_current_distribution.sh -l pmem=2500mb -l nodes=1:ppn=3  -l walltime=12:00:00 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
-Sys.sleep(5)
+Sys.sleep(2)
 }
 

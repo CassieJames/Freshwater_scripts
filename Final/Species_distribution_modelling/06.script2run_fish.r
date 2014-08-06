@@ -3,20 +3,16 @@ args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]]))
 library(SDMTools); library(parallel)
 source('/home/jc148322/scripts/libraries/cool_functions.r')
 
-#working directory
-setwd(wd)
+
+
+out.dir=paste(cur.dir,es,"/",sep='')
+
 load('/home/jc246980/SDM/clipnew.Rdata') #load position data of segmentNo and regions. object called clip.
 clip=clipnew
+clip.column='Clip2RB'
 load('/home/jc148322/NARPfreshwater/SDM/connectivity.file.Rdata') #load position data of segmentNo and connected 'sub-graphs'. object called connectivity.
 
-exclude=read.csv('/home/jc246980/SDM/fish.to.exclude.csv',as.is=TRUE)
-exclude=exclude[which(exclude[,2]=='exclude'),1]
-species=list.files(wd)
-species=setdiff(species,exclude)
 
-
-
-for (spp in species) {cat (spp,'\n')
 #working directory
 spp.dir=paste(wd,spp,'/',sep='');setwd(spp.dir)
 threshold=read.csv('output/maxentResults.csv',as.is=TRUE) #read in the data for threshold
@@ -29,14 +25,17 @@ load(paste('summary/',es,'.pot.mat.Rdata',sep='')) #load the potential distribut
 real.mat=pot.mat[,3:ncol(pot.mat)] #create a copy of potential matrix for clipping, drop SegmentNo (rebind later) and current
 real.mat[which(real.mat<=threshold)]=0 #clip anything below threshold to 0
 
-#occur=read.csv('occur.csv',as.is=T) #load occurrence data - not usng this as the current distrbutions have been substantially modified during vetting
-load(paste(current,"/",spp,'.cur.real.mat.Rdata', sep='')) # load current realised distribution
+#occur=read.csv('occur.csv',as.is=T) #load occurrence data - not using this as the current distributions have been substantially modified during vetting
+load(paste(cur.dir,"/",spp,'.cur.real.mat.Rdata', sep='')) # load current realised distribution
 occur=distdata[which(distdata$Current>0),] #remove SegmentNos (rows) with no occurrence records 
 
-regions=(clip[which(clip$SegmentNo %in% occur$SegmentNo),clip.column])#find the regions in which species has been observed - this will be fish provinces for fish, and level 2 basins for other taxa
-regions=as.data.frame(table(regions))
-regions2=regions[regions$Freq >250,] # Some segments overlap border with adjacent provinces so need to remove these overlapped provinces
-regions=regions2$regions
+regions=(clip[which(clip$SegmentNo %in% occur$SegmentNo),clip.column])#find the river basins in which species has been observed
+
+#Following code needs to be reinstat6ed if bioregions are used - problem of segments overlapping adjacent bioregion but probably not such as great an issue for river basins
+#regions=as.data.frame(table(regions))# 
+#regions2=regions[regions$Freq >250,] # Some segments overlap border with adjacent provinces so need to remove these overlapped provinces
+#regions=regions2$regions
+
 SegmentNo=clip$SegmentNo[which(clip[,clip.column] %in% regions)] #find the segment nos within those regions
 
 real.mat[which(!(pot.mat[,'SegmentNo'] %in% SegmentNo)),]=0 #apply the clip
@@ -53,7 +52,5 @@ real.mat[which(!(pot.mat[,'SegmentNo'] %in% SegmentNo[,1])),]=0 #apply the clip
 real.mat[which(real.mat>0)]=1
 real.mat=cbind(pot.mat[,1],real.mat)
 colnames(real.mat)[1]=c('SegmentNo')
-save(real.mat,file=paste(out,"/",es,".",spp,'.cur.real.mat.Rdata',sep='')); rm(real.mat); gc() #write out the data		
+save(real.mat,file=paste(out.dir,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(real.mat); rm(pot.mat); gc() #write out the data		
 
-
-}
