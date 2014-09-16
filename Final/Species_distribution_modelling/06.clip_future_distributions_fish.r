@@ -18,7 +18,11 @@ species=setdiff(species,exclude)
 
 ESs=c('RCP3PD','RCP45','RCP6','RCP85')
 
+
 for (es in ESs) {
+
+species=species[1:5]
+out.dir=paste('/home/jc246980/SDM/Realized/',taxon,"/Clip4North/",es,"/", sep="")
 
 for (spp in species) {cat (spp,'\n')
 
@@ -27,18 +31,22 @@ es.arg = paste('es="',es,'" ',sep='')
 wd.arg = paste('wd="',wd,'" ',sep='')
 tax.arg = paste('taxon="',taxon,'" ',sep='')
 cur.arg=paste('cur.dir="',cur.dir,'" ',sep='') 
-out.arg=paste('out="',out.dir,'" ',sep='') 
+out.arg=paste('out.dir="',out.dir,'" ',sep='') 
+spp.arg = paste('spp="',spp,'" ',sep='') # species argument
 
 #create sh file
 zz = file(paste('06.',es,'.future_realised.sh',sep=''),'w') ##create the sh file
 cat('#!/bin/sh\n',file=zz)
 cat('cd $PBS_O_WORKDIR\n',file=zz)
 cat('source /etc/profile.d/modules.sh\n',file=zz)
-cat('module load R-2.15.1\n',file=zz)
-cat("R CMD BATCH --no-save --no-load '--args ",es.arg,tax.arg,wd.arg,cur.arg,out.arg,"' ",script.file,' 06.',es,'.future_realised.Rout \n',sep='',file=zz)
+cat('module load R\n',file=zz)
+cat("R CMD BATCH --no-save --no-load '--args ",es.arg,tax.arg,wd.arg,cur.arg,out.arg,spp.arg,"' ",script.file,' 06.',es,'.future_realised.Rout \n',sep='',file=zz)
 close(zz)
 
 #submit the job
-system(paste('qsub -m n -N ',spp,'_',es,' -l nodes=1:ppn=12 -l epilogue=/home/jc246980/epilogue/epilogue.sh 06.',es,'.future_realised.sh',sep=''))
+system(paste('qsub -m n -N ',spp,'_',es,' 06.',es,'.future_realised.sh -l pmem=2000mb -l walltime=00:12:00 -l nodes=1:ppn=3  -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
+
+
+
 }
 }

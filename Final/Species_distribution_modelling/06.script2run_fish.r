@@ -3,10 +3,6 @@ args=(commandArgs(TRUE)); for(i in 1:length(args)) { eval(parse(text=args[[i]]))
 library(SDMTools); library(parallel)
 source('/home/jc148322/scripts/libraries/cool_functions.r')
 
-
-
-out.dir=paste(cur.dir,es,"/",sep='')
-
 load('/home/jc246980/SDM/clipnew.Rdata') #load position data of segmentNo and regions. object called clip.
 clip=clipnew
 clip.column='Clip2RB'
@@ -31,7 +27,7 @@ occur=distdata[which(distdata$Current>0),] #remove SegmentNos (rows) with no occ
 
 regions=(clip[which(clip$SegmentNo %in% occur$SegmentNo),clip.column])#find the river basins in which species has been observed
 
-#Following code needs to be reinstat6ed if bioregions are used - problem of segments overlapping adjacent bioregion but probably not such as great an issue for river basins
+#Following code needs to be reinstated if bioregions are used - problem of segments overlapping adjacent bioregion but probably not such as great an issue for river basins
 #regions=as.data.frame(table(regions))# 
 #regions2=regions[regions$Freq >250,] # Some segments overlap border with adjacent provinces so need to remove these overlapped provinces
 #regions=regions2$regions
@@ -52,5 +48,5 @@ real.mat[which(!(pot.mat[,'SegmentNo'] %in% SegmentNo[,1])),]=0 #apply the clip
 real.mat[which(real.mat>0)]=1
 real.mat=cbind(pot.mat[,1],real.mat)
 colnames(real.mat)[1]=c('SegmentNo')
-save(real.mat,file=paste(out.dir,"/",spp,'.cur.real.mat.Rdata',sep='')); rm(real.mat); rm(pot.mat); gc() #write out the data		
+save(real.mat,file=paste(out.dir,"/",spp,'.fut.real.mat.Rdata',sep='')); rm(real.mat); rm(pot.mat); gc() #write out the data		
 
