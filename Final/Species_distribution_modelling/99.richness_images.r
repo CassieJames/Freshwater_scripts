@@ -25,18 +25,22 @@ yr=2085													# Select year (for projected future)
 
 #### Images for current richness
 
-png(paste('Rich_current_',tax,'.png',sep=''),width=dim(base.asc)[1]*2+50,height=dim(base.asc)[2]*2+200,units='px', pointsize=30, bg='white')
+png(paste('Rich_current_newfile',tax,'.png',sep=''),width=dim(base.asc)[1]*2+50,height=dim(base.asc)[2]*2+200,units='px', pointsize=30, bg='white')
 		par(mfrow=c(2,2),mar=c(2,2,2,2))
 	
-    load(paste('/home/jc246980/SDM/Richness/',tax,'/Richness_current.mat.Rdata',sep=''))
+    load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/Richness_current.mat.Rdata',sep=''))
+	#load(paste('/home/jc246980/SDM/Richness/Obsolete/',tax,'Richness_current.mat.Rdata',sep=''))
 	zlim=c(0,round(max(Richness_current[,'Current'])))	
 	pos=tpos
 	pos=merge(pos,Richness_current, by='SegmentNo',all.x=TRUE)
 	tasc=make.asc(pos[,'Current'])
 	image(base.asc,ann=F,axes=F,col='white')
 	image(tasc,ann=F,axes=F,col=cols,zlim=zlim, add=TRUE)
+	plot(Drainageshape , lwd=10, ann=FALSE,axes=FALSE, add=TRUE)
 	color.legend(118,-42,140,-41,zlim,cols,cex=4)
 dev.off()
+
+
 
 
 #### Images for future richness
@@ -67,9 +71,9 @@ png(paste(es,'_richness_fish_',yr,'.png',sep=''),width=dim(base.asc)[1]*2+30, he
 						 1,1,1,1,2,2,2,2),nr=4,nc=8,byrow=TRUE) #create a layout matrix for images
 		
 	layout(mat) #call layout as defined above
-	
-    load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep=''))
-	zlim=c(1,84)
+
+    load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/Richness_current.mat.Rdata',sep=''))
+	zlim=c(1,61)
 
 	pos=tpos
 	pos=merge(pos,Richness_current, by='SegmentNo',all.x=TRUE)
@@ -82,7 +86,7 @@ png(paste(es,'_richness_fish_',yr,'.png',sep=''),width=dim(base.asc)[1]*2+30, he
 	plot(Drainageshape , lwd=10, ann=FALSE,axes=FALSE, add=TRUE)
     color.legend(118,-42,140,-41,zlim,cols,cex=5)
 	
-	load(paste('/home/jc246980/SDM/Richness/',es,"_",tax,'_Richness_quants.Rdata',sep=''))
+	load(paste('/home/jc246980/SDM/Richness/Clip4North/fish/',es,'.Richness_quants.Rdata',sep=''))
 	pos=tpos
 	pos=merge(pos,outquant_Richness, by='SegmentNo',all.x=TRUE)
 	tasc=make.asc(pos[,paste(yr,'_',percentile,sep='')])
