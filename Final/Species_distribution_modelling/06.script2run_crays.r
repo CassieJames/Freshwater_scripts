@@ -7,9 +7,10 @@ load('/home/jc246980/SDM/clipnew.Rdata') #load position data of segmentNo and re
 clip=clipnew
 clip.column='Clip2RB'
 load('/home/jc148322/NARPfreshwater/SDM/connectivity.file.Rdata') #load position data of segmentNo and connected 'sub-graphs'. object called connectivity.
-
+out.dir=paste('/home/jc246980/SDM/Realized/',taxon,"/Clip4North/",es,"/", sep="")
 
 #working directory
+
 spp.dir=paste(wd,spp,'/',sep='');setwd(spp.dir)
 threshold=read.csv('output/maxentResults.csv',as.is=TRUE) #read in the data for threshold
 threshold=threshold$Equate.entropy.of.thresholded.and.original.distributions.logistic.threshold #isolate threshold
@@ -48,5 +49,5 @@ real.mat[which(!(pot.mat[,'SegmentNo'] %in% SegmentNo[,1])),]=0 #apply the clip
 #real.mat[which(real.mat>0)]=1
 real.mat=cbind(pot.mat[,1],real.mat)
 colnames(real.mat)[1]=c('SegmentNo')
-save(real.mat,file=paste(out.dir,"/",spp,'.fut.real.mat.Rdata',sep='')); rm(real.mat); rm(pot.mat); gc() #write out the data		
+save(real.mat,file=paste(out.dir,spp,'.fut.real.mat.Rdata',sep='')); rm(real.mat); rm(pot.mat); gc() #write out the data		
 

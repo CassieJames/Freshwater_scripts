@@ -2,11 +2,11 @@
 ########################################################################################################
 ### Define inputs, working directories and necessary libraries
 taxa=c('fish','crayfish','turtles','frog')
-taxon=taxa[1] #change as appropriate
+taxon=taxa[2] #change as appropriate
 taxname=sub(substr(taxon,1,1),toupper(substr(taxon,1,1)),taxon)
 
 
-occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_masterV2.Rdata",sep='') #give the full file path of your species data
+occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_master.Rdata",sep='') #give the full file path of your species data
 
 basedir='/home/jc246980/SDM/'
 env.file=paste(basedir,"current_1990.Rdata",sep='')
@@ -16,7 +16,7 @@ projdir = paste(basedir,'Environmental_future/',sep='') #define the projection d
 projs = list.files(projdir) #get a list of the projections
 ########################################################################################################
 
-load(env.file) #read in evirodata
+load(env.file) #read in enviromental data
 ##########run only the first time
 for (tt in paste('bioclim_',sprintf('%02i',c(1,4:11)),sep="")) { cat(tt,'\n') #round temperature where appropriate
 cois = grep(tt,colnames(current)); current[,cois] = round(current[,cois],1)

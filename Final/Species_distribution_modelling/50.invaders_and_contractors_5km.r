@@ -14,24 +14,22 @@
 	taxa = c("fish", "crayfish","frog","turtles")
 	tax = taxa[1]	
 	ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
-	real.dir=paste("/home/jc246980/SDM/Realised_distributions/",tax,"/",sep="") 
-	cur.dir=paste("/home/jc246980/SDM/Realized_current/",tax,"/",sep="") 
+	real.dir=paste("/home/jc246980/SDM/Realized/",tax,"/Clip4North/",sep="") 
 	sdm.dir = '/home/jc246980/SDM/'		
 	work.dir=paste(sdm.dir,'models_',tax,"/",sep="") ; setwd(work.dir)
 	out.dir=paste("/home/jc246980/SDM/Invaders_contractors/",tax,"/Quantiles/",sep="")
 	
 	exclude=read.csv('/home/jc148322/NARPfreshwater/SDM/fish.to.exclude.csv',as.is=TRUE)
 	exclude=exclude[which(exclude[,2]=='exclude'),1]
-	species=list.files(work.dir)
-	species=setdiff(species,exclude)
+	species=list.files(real.dir, pattern=".Rdata")
+	species=gsub(".cur.real.mat.Rdata", "", species)
 
-	
-		
+for (es in ESs) {print(es)		
 # determine contractors and invaders
 for (spp in species) { print(spp)
 
-			load(paste(real.dir,es,".",spp,'.real.mat.Rdata',sep='')) #load the future realised distribution data. object is called real.mat
-			load(paste(cur.dir, spp,'.cur.real.mat.Rdata',sep='')) #load the current realised distribution data. object is called distdata
+			load(paste(real.dir,es,"/",spp,'.fut.real.mat.Rdata',sep='')) #load the future realised distribution data. object is called real.mat
+			load(paste(real.dir,spp,'.cur.real.mat.Rdata',sep='')) #load the current realised distribution data. object is called distdata
 			
 			real.mat[which(real.mat>0)]=1 #clip anything above threshold to 1
 			distdata[which(distdata[,2]>0),2]=1 #clip anything above threshold to 1
@@ -53,7 +51,7 @@ for (spp in species) { print(spp)
 			}
 			save(Invaders,file=paste(out.dir,es,'.Invaders.mat.Rdata',sep='')); rm(Invaders)
 			save(Contractors,file=paste(out.dir,es,'.Contractors.mat.Rdata',sep='')); rm(Contractors)
-
+}
 
 ### Determine quantiles for the future 
 

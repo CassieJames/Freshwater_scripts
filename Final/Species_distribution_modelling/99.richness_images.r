@@ -112,8 +112,8 @@ dev.off()
               
 for (tax in taxa) {	print(tax)
 		
-		load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep=''))	
-		load(paste('/home/jc246980/SDM/Richness/',es,"_",tax,'_Richness_quants.Rdata',sep=''))
+		load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/Richness_current.mat.Rdata',sep=''))	
+		load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,"/",es,'.Richness_quants.Rdata',sep=''))
 		outdelta=outquant_Richness[,2:ncol(outquant_Richness)]# make a copy
 
 		outdelta=outdelta/Richness_current[,2]

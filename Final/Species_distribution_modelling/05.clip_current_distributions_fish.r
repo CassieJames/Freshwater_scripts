@@ -13,6 +13,7 @@ script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_mode
 
 
 
+
 for (spp in species) {
 spp.folder = paste(wd,spp,"/",sep=""); setwd(spp.folder) #define and set the species folder
 spp.arg = paste('spp="',spp,'" ',sep='') # species argument

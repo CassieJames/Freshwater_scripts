@@ -4,7 +4,7 @@
 ################################################################################
 
 taxa = c("fish", "crayfish","frog","turtles")
-tax = taxa[1]	
+tax = taxa[2]	
 wd = paste('/home/jc246980/SDM/models_',tax,"/",sep=""); setwd(wd)
 
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/04.script2run.r'

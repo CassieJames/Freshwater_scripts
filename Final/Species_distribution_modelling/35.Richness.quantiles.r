@@ -1,9 +1,9 @@
 
 library(parallel)
 taxa = c("fish", "crayfish","frog","turtles")
-tax = taxa[1]	
+tax = taxa[4]	
 out.dir=paste("/home/jc246980/SDM/Richness/Clip4North/",tax,"/",sep=""); setwd(out.dir)
-ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[1]	
+ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
 YEARs=seq(2015,2085,10)
 outquant_Richness=NULL
 load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,"/",es,'_Richness_future.mat.Rdata',sep=''))

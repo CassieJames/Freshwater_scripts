@@ -20,7 +20,7 @@ wd.arg = paste('wd="',wd,'" ',sep='') # working directory argument
 out.arg=paste('out.dir="',out.dir,'" ',sep='') # out directory argument
 
 
-zz = file('04.clip_north_crays.sh','w') ##create the sh file
+zz = file('05.clip_north_crays.sh','w') ##create the sh file
 cat('#!/bin/sh\n',file=zz)
 cat('cd $PBS_O_WORKDIR\n',file=zz)
 cat('source /etc/profile.d/modules.sh\n',file=zz)
@@ -29,7 +29,7 @@ cat("R CMD BATCH --no-save --no-load '--args ",spp.arg,wd.arg,out.arg,"' ",scrip
 close(zz)
 
 #submit the job
-system(paste('qsub -m n -N ',spp,' 04.clip_north_crays.sh -l pmem=1000mb -l walltime=00:01:00 -l nodes=1:ppn=3 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
+system(paste('qsub -m n -N ',spp,' 05.clip_north_crays.sh -l pmem=1000mb -l walltime=00:01:00 -l nodes=1:ppn=3 -l epilogue=/home/jc246980/epilogue/epilogue.sh',sep=''))
 Sys.sleep(2)
 
 }

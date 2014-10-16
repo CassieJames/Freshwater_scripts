@@ -6,8 +6,8 @@ library(SDMTools); library(maptools) #load the necessary library
 craydata.dir = "/home/jc246980/Species_data/Crayfish_database/Merged_crayfish_records/" # crayfish point data directory
 out.dir="/home/jc246980/Species_data/Reach_data/"
 
-wd = "/home/jc246980/Hydrology.trials/"; setwd(wd)                        
-load("/home/jc246980/Hydrology.trials/Catchmentraster250.Rdata")
+#wd = "/home/jc246980/Obsolete/Hydrology.trials/"; setwd(wd)                        
+load("/home/jc246980/Obsolete/Hydrology.trials/Catchmentraster250.Rdata")
 
 networkatts = read.dbf('/home/jc246980/Janet_Stein_data/NetworkAttributes.dbf')
 
