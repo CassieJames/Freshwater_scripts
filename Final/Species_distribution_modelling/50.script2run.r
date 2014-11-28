@@ -1,10 +1,10 @@
-
 ###### Script to determine numbers of invaders, contractors and retainers 
 ###### C. James (based on scripts by J VanDerWal and A. Reside	18 september 2013
 ################################################################################
 	module load R 
 	
 	
+
 	library(SDMTools)#load the necessary libraries
 	library(parallel)
 	source('/home/jc148322/scripts/libraries/cool_functions.r')		
@@ -12,8 +12,8 @@
 #### Determine contractors and invaders
 	
 	taxa = c("fish", "crayfish","frog","turtles")
-	tax = taxa[4]	
-	ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
+	tax = taxa[1]	
+	ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85','RCP85Bioclip'); es=ESs[5]	
 	real.dir=paste("/home/jc246980/SDM/Realized/",tax,"/Clip4North/",sep="") 
 	sdm.dir = '/home/jc246980/SDM/'		
 	work.dir=paste(sdm.dir,'models_',tax,"/",sep="") ; setwd(work.dir)
@@ -90,7 +90,7 @@ for (yr in YEARs) {
 
 }
 
-taxa = c("fish", "crayfish","frog","turtles"); tax=taxa[4]
+taxa = c("fish", "crayfish","frog","turtles"); tax=taxa[3]
 out.dir = '/home/jc246980/SDM/Invaders_contractors/'
 load('/home/jc246980/SDM/models_fish/Ambassis_agassizii/summary/RCP85.pot.mat.Rdata')
 
@@ -103,22 +103,6 @@ outquant_Contractors=cbind(pot.mat[,1],outquant_Contractors)
 tt=expand.grid(c(10,50,90),YEARs)
 colnames(outquant_Contractors)=c('SegmentNo',paste(tt[,2],'_',tt[,1],sep=''))
 save(outquant_Contractors,file=paste(out.dir,es,"_",tax,'_Contractors.Rdata',sep=''))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -3,8 +3,8 @@
 # July 2014
 #### Determine current and future species richness
 
-taxa = c("fish", "crayfish","frog","turtles"); tax = taxa[4]	
-ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[2]
+taxa = c("fish", "crayfish","frog","turtles"); tax = taxa[1]	
+ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85','RCP85Bioclip' ); es=ESs[5]
 out.dir=paste("/home/jc246980/SDM/Richness/Clip4North/",tax,"/",sep="")
 sh.dir='/home/jc246980/SDM/Richness/temp/'; setwd(sh.dir)
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/30.Script2run.r'

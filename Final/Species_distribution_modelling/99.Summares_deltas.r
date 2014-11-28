@@ -33,8 +33,8 @@ summaries=NULL
 ###02. for each taxa, load the percentile richness for future and current and create proportions
 for (tax in taxa) { cat(tax,'\n') #cycle through each basin
 
-        load(paste(basedir,'/',es,"_",tax,'_Richness_quants.Rdata',sep=''))					#load the future data
-        load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep=''))	#load the current data
+        load(paste(basedir,'Clip4North/',tax,"/",es,".Richness_quants.Rdata",sep=''))					#load the future data
+        load(paste(basedir,'Clip4North/',tax,"/",es,"_Richness_current.mat.Rdata",sep=''))	
         outdelta=outquant_Richness[,2:ncol(outquant_Richness)]# make a copy
 		outdelta=outdelta/Richness_current[,2]
 		outdelta[which(is.nan(outdelta))]=NA
@@ -64,7 +64,7 @@ for (tax in taxa) { cat(tax,'\n') #cycle through each basin
 
 		}; cat('\n')
 		
-	if (tax==c("fish")) summaries=table_delta else summaries=cbind(summaries,table_delta[,2:4])
+	if (tax==c("fish")) summaries=table_delta else summaries=cbind(summaries,table_delta)
 	
 }	
 	write.csv(summaries,paste(out.dir,"rb_richness_all.csv",sep=''),row.names=T)	

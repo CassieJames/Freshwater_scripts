@@ -22,11 +22,12 @@ PERC=c('10','50','90'); percentile=PERC[2]				# Select percentile to plot
 es='RCP85'												# select RCP
 yr=2085													# Select year (for projected future)
 
-	png(paste(es,'_richness_Figure1.1_',yr,'.Oct15.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+	png(paste(es,'_richness_Figure1.1_',yr,'.Nov27_bioregionclip.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
     par(mar=c(0,3,0,3),mfrow=c(4,3),cex=1,oma=c(10,10,10,0)) #define the plot parameters
 
 for (tax in taxa) {print(tax)
 		
+	if (tax==c("fish")) es='RCP85Bioclip'	
 	
 	load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/RCP3PD_Richness_current.mat.Rdata',sep='')) # Current
 	Richness_current[,2]=Richness_current[,2]/max(c(Richness_current[,2]),na.rm=T) # Make richness a proportion of maximum
@@ -105,21 +106,21 @@ image.dir = '/home/jc246980/SDM/Invaders_contractors/Images/'; setwd(image.dir)
 taxa=c('fish','crayfish','turtles','frog')
 Drainageshape = readShapePoly('/home/jc246980/Janet_Stein_data/Drainage_division') #read in your shapefile
 
-
-	png(paste(es,'_contractors_Figure2.1_',yr,'.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+PERC=c('10','50','90'); percentile=PERC[2]		
+	png(paste(es,'_contractors_Figure2.1_',yr,'Nov28.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
     par(mar=c(0,3,0,3),mfrow=c(4,3),cex=1,oma=c(10,10,10,0)) #define the plot parameters
 
 for (tax in taxa) {print(tax)
 
 	### Current richness
-	load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep='')) # Current
+	load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/',es,"_Richness_current.mat.Rdata",sep='')) # Current
 	Richness_current[,2]=Richness_current[,2]/max(c(Richness_current[,2]),na.rm=T) # Make richness a proportion of maximum
 	pos=tpos	
 	cols=colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(11)
 	pos=merge(pos,Richness_current, by='SegmentNo',all.x=TRUE)
 	zlim=c(min(pos$Current[which(pos$Current>0)],na.rm=T),max(c(pos$Current),na.rm=T))
 	tascCur=make.asc(pos[,'Current'])
-	tascCur[which(tasc>0)] = NA
+	tascCur[which(tascCur>0)] = NA
 	image(base.asc,ann=F,axes=F,col='white')
 	image(tascCur,ann=F,axes=F,col='grey', add=TRUE)
 	tasc=make.asc(pos[,'Current'])
@@ -150,7 +151,7 @@ for (tax in taxa) {print(tax)
 	
 	cols=colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF"))(11)
 	cols=cols[11:1]
-	load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep='')) # Current
+	load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/',es,"_Richness_current.mat.Rdata",sep='')) # Current
 	load(paste('/home/jc246980/SDM/Invaders_contractors/',es,"_",tax,'_Contractors.Rdata',sep='')) # Future
 	outdelta=outquant_Contractors[,2:ncol(outquant_Contractors)]# make a copy
 	outdelta=(outdelta)/(Richness_current[,2]) # divide future by current
@@ -178,12 +179,12 @@ for (tax in taxa) {print(tax)
 ########################################################################################################################################################
 #### Invaders image
 	
-	png(paste(es,'_Invaders_Figure3.1_',yr,'.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
+	png(paste(es,'_Invaders_Figure3.1_',yr,'Nov28.png',sep=''),width=dim(base.asc)[1]*3+300, height=dim(base.asc)[2]*4+150, units='px', pointsize=20, bg='WHITE')	
     par(mar=c(0,3,0,3),mfrow=c(4,3),cex=1,oma=c(10,10,10,0)) #define the plot parameters
 
 for (tax in taxa) {print(tax)
 
-	load(paste('/home/jc246980/SDM/Richness/',tax,'Richness_current.mat.Rdata',sep='')) # Current
+	load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/',es,"_Richness_current.mat.Rdata",sep='')) 
 	pos=tpos
 	cols=colorRampPalette(c("#A50026","#D73027","#F46D43","#FDAE61","#FEE090","#FFFFBF","#E0F3F8","#ABD9E9","#74ADD1","#4575B4","#313695"))(11)
 	pos=merge(pos,Richness_current, by='SegmentNo',all.x=TRUE)
