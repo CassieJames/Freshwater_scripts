@@ -17,7 +17,7 @@
 	real.dir=paste("/home/jc246980/SDM/Realized/",tax,"/Clip4North/",sep="") 
 	sdm.dir = '/home/jc246980/SDM/'		
 	work.dir=paste(sdm.dir,'models_',tax,"/",sep="") ; setwd(work.dir)
-	out.dir=paste("/home/jc246980/SDM/Invaders_contractors/",tax,"/Quantiles/",sep="")
+	out.dir=paste("/home/jc246980/SDM/Invaders_contractors/",tax,"/Data/",sep="")
 	
 	exclude=read.csv('/home/jc148322/NARPfreshwater/SDM/fish.to.exclude.csv',as.is=TRUE)
 	exclude=exclude[which(exclude[,2]=='exclude'),1]
@@ -106,12 +106,101 @@ save(outquant_Contractors,file=paste(out.dir,es,"_",tax,'_Contractors.Rdata',sep
 
 
 
+##############################TURNOVER
+
+	
+library(SDMTools)#load the necessary libraries
+library(parallel)
+source('/home/jc148322/scripts/libraries/cool_functions.r')		
+	
+taxa = c("fish", "crayfish","frog","turtles")
+tax = taxa[4]	
+ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
+out.dir=paste("/home/jc246980/SDM/TurnOver/",tax,"/",sep="")
+
+load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/RCP3PD_Richness_current.mat.Rdata',sep='')) # Current
+YEARs=seq(2015,2085,10)
+data.dir=paste('/home/jc246980/SDM/Invaders_contractors/',tax,'/Data/',sep='')
+load(paste(data.dir,es,'.Invaders.mat.Rdata',sep='')) 
+load(paste(data.dir,es,'.Contractors.mat.Rdata',sep='')) 
+
+Turnover=((Invaders+Contractors))/(Richness_current[,2])
+
+save(Turnover,file=paste(out.dir,es,'.Turnover_noADD1.mat.Rdata',sep=''))
+
+outquant_Turnover=NULL
+
+for (yr in YEARs) {
+	
+	cois=grep(yr,colnames(Turnover))
+	tdata=Turnover[,cois]
+
+	ncore=8 #define number of cores
+	cl <- makeCluster(getOption("cl.cores", ncore))#define the cluster for running the analysis
+	tout = t(parApply(cl,tdata,1,function(x) { return(quantile(x,c(0.1,0.5,0.9),na.rm=TRUE,type=8)) }))
+	stopCluster(cl) #stop the cluster for analysis
+
+	###need to store the outputs
+	outquant_Turnover=cbind(outquant_Turnover,tout)
+
+}
+
+out.dir = '/home/jc246980/SDM/TurnOver/'
+load('/home/jc246980/SDM/models_fish/Ambassis_agassizii/summary/RCP85.pot.mat.Rdata')
+
+outquant_Turnover=cbind(pot.mat[,1],outquant_Turnover)
+tt=expand.grid(c(10,50,90),YEARs)
+colnames(outquant_Turnover)=c('SegmentNo',paste(tt[,2],'_',tt[,1],sep=''))
+save(outquant_Turnover,file=paste(out.dir,es,"_",tax,'_Turnover_quants_noADD1.Rdata',sep=''))
 
 
 
 
+##############################Model agreement
 
+	
+library(SDMTools)#load the necessary libraries
+library(parallel)
+source('/home/jc148322/scripts/libraries/cool_functions.r')		
+	
+taxa = c("fish", "crayfish","frog","turtles")
+tax = taxa[2]	
+ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
+out.dir=paste("/home/jc246980/SDM/Richness/Clip4North/",tax,"/",sep="")
 
+load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,'/RCP3PD_Richness_current.mat.Rdata',sep='')) # Current
+load(paste('/home/jc246980/SDM/Richness/Clip4North/',tax,"/",es,'_Richness_future.mat.Rdata',sep='')) # Future
+YEARs=seq(2015,2085,10)
+yr=YEARs[8]
+
+for (yr in YEARs) {
+	
+	cois=grep(yr,colnames(Richness_future))
+	tdata=Richness_future[,cois]
+	ttdata=(tdata+1)/(Richness_current[,2]+1)
+	
+	Increases_tdata=Decreases_tdata=ttdata
+	
+	Increases_tdata[which(Increases_tdata<1)] = 0
+	Increases_tdata[which(Increases_tdata>1)] = 1
+	Iout = apply(Increases_tdata,1,sum)
+	
+	Decreases_tdata[which(Decreases_tdata<1)] = 1
+	Decreases_tdata[which(Decreases_tdata>1)] = 0
+	Dout = apply(Decreases_tdata,1,sum)
+
+	Model_agree=cbind(Richness_current[,1],Iout,Dout)
+	No_change=	(Model_agree[,2]+Model_agree[,3])-18
+	Model_agree=cbind(Model_agree, No_change)
+	Model_agree[,2]=Model_agree[,2]-No_change
+	Model_agree[,3]=Model_agree[,3]-No_change
+	Model_agree[,3]=Model_agree[,3]*-1
+	colnames(Model_agree)[1]<-"SegmentNo"
+	colnames(Model_agree)[2]<-"Increases_agree"
+	colnames(Model_agree)[3]<-"Decreases_agree"
+	save(Model_agree,file=paste(out.dir,es,"_",yr,".Richness_agree.Rdata",sep=''))
+
+}
 
 
 
