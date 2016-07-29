@@ -431,7 +431,7 @@ image.dir = '/home/jc246980/SDM/Paper_images/'; setwd(image.dir)
 data.dir="/home/jc246980/SDM/Environmental_futures_final/"	
 
 es='RCP85'	
-yr=2085
+yr=2075
 	
 GCMs = list.files(data.dir, pattern="RCP85") # get a list of GCMs	
 Files=GCMs[grep(yr,GCMs)]
@@ -454,7 +454,7 @@ for (foi in Files) { cat(foi,'\n')
 	ttdata=tdata[,cois]
 	temp=merge(temp,ttdata, by='SegmentNo',all.x=TRUE)
 	}
-	save(temp, file=paste(data.dir,es,"_",yr,"_temp.Rdata",sep=''))
+	save(temp, file=paste(data.dir,es,"_",yr,"_rainfall.Rdata",sep=''))
 
 for (foi in Files) { cat(foi,'\n')	
 	tdata=read.csv(paste(data.dir, foi, sep=""))
@@ -689,21 +689,21 @@ pnts=cbind(x=c(146,147.5,147.5,146),y=c(-12,-12,-16,-16))
 		base.asc = read.asc.gz(paste('/home/jc148322/NARPfreshwater/SDM/SegmentNo_1km.asc.gz',sep='')) #read in the base asc file
 		pos=make.pos(base.asc)
 		pos$SegmentNo=extract.data(cbind(pos$lon,pos$lat),base.asc)
-	
-		load(paste(data.dir,"Accumulated_runoff_delta.Rdata",sep=''))
-		pos=merge(pos,outdelta,by='SegmentNo',all.x=TRUE)
-		outdeltalims=pos[,paste(es,yr,percentile,sep='_')]
-		tasc=base.asc; tasc[cbind(pos$row,pos$col)]=outdeltalims[,paste(es,yr,percentile,sep='_')]			
-		tasc[which(tasc<0.25)] = 0.15
-		tasc[which(tasc<0.5 & tasc>= 0.25)] = 0.25
-		tasc[which(tasc>=0.5 & tasc<1)] = 0.35
-		tasc[which(tasc>=1 & tasc<2)] = 0.35
-		tasc[which(tasc>=2 & tasc<10)] = 0.45
-		tasc[which(tasc>=4)] = 0.55
+		all.cols = colorRampPalette(c("#A50026","#F46D43","#FEE090","#FFFFBF","#E0F3F8","#313695"))(6)
+		#load(paste(data.dir,"Accumulated_runoff_delta.Rdata",sep=''))
+		#pos=merge(pos,outdelta,by='SegmentNo',all.x=TRUE)
+		#outdeltalims=pos[,paste(es,yr,percentile,sep='_')]
+		tasc=base.asc; tasc[cbind(pos$row,pos$col)]=pos[,paste(es,yr,percentile,sep='_')]			
+		tasc[which(tasc<0.25)] = 1
+		tasc[which(tasc<0.5 & tasc>= 0.25)] = 2
+		tasc[which(tasc>=0.5 & tasc<1)] = 3
+		tasc[which(tasc>=1 & tasc<2)] = 4
+		tasc[which(tasc>=2 & tasc<10)] = 5
+		tasc[which(tasc>=10)] = 6
 		zlims = range(c(0,as.vector(tasc)),na.rm=TRUE)
 		image(tasc, ann=FALSE,axes=FALSE,col=all.cols,zlim=zlims)
 		plot(Drainageshape , lwd=8, ann=FALSE,axes=FALSE, add=TRUE)
-		labs=c("<0.25","0.5","1","2",">4")
+		labs=c("<0.25","0.5","1","2",">10")
 		legend.gradient(pnts,cols=all.cols,limits=zlims, cex= 6, title='')
 		
 		dev.off() #close out the image

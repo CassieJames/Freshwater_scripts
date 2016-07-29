@@ -1,19 +1,23 @@
 ###written by Lauren Hodgson, modified from Jeremy VanDerWal's SDM scripts. Jan 2013
 ########################################################################################################
 ### Define inputs, working directories and necessary libraries
-taxa=c('fish','crayfish','turtles','frog')
-taxon=taxa[2] #change as appropriate
+taxa=c('Fish','Crayfish','Turtles','Frogs')
+taxon=taxa[4] #change as appropriate
 taxname=sub(substr(taxon,1,1),toupper(substr(taxon,1,1)),taxon)
 
 
-occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_master.Rdata",sep='') #give the full file path of your species data
+occur.file=paste('/home/jc246980/Species_data/Reach_data/',taxname,"_reach_master_50.Rdata",sep='') #give the full file path of your species data
 
 basedir='/home/jc246980/SDM/'
 env.file=paste(basedir,"current_1990.Rdata",sep='')
 maxent.jar = "/home/jc246980/SDM/maxent.jar" #define the location of the maxent.jar file
-wd=paste("/home/jc246980/SDM/models_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
+wd=paste("/home/jc246980/SDM/models_50_",taxon,"/",sep='');dir.create(wd); setwd(wd) #define and set the working directory
 projdir = paste(basedir,'Environmental_future/',sep='') #define the projection directory
 projs = list.files(projdir) #get a list of the projections
+poi=projs[intersect(grep(2085,projs),grep('RCP85',projs))] # this command limits modelling to a limited number of projections
+poi=c("current_1990.csv", poi)
+
+
 ########################################################################################################
 
 load(env.file) #read in enviromental data
@@ -35,7 +39,7 @@ tt = unique(round(c(which(rowSums(occur[,-1])>=1),runif(20000,1,nrow(current))))
 bkgd = current[tt,]; write.csv(bkgd,paste('../bkgd_',taxon,'.csv',sep=''),row.names=FALSE) #write out the background points
 
 for (spp in species) {cat(spp,'\n')
-if (length(which(occur[,spp]>0)) >= 5) { #model species where count is greater or equal to 5
+if (length(which(occur[,spp]>0)) >= 50) { #model species where count is greater or equal to 50
 toccur = current[which(current$SegmentNo %in% occur[which(occur[,spp]>0),'SegmentNo']),] #get segment number for the species
 toccur$SegmentNo=spp #reset the values the species column of the occur file
 spp.dir = paste(wd,spp,'/',sep='') #define the species directory

@@ -211,3 +211,23 @@ temp=occur
 temp <- temp[, !(colnames(temp) %in% exotics)]
 occur=temp
 save(occur,file=paste(out.dir,"Fish_reach_masterV2.Rdata",sep=''))
+
+### remove segments with no records, exotics and estuarine species and those with less than 50 occurrences April 2016
+
+exotics=read.csv("/home/jc246980/SDM/fish.to.exclude.csv")
+exotics <- exotics[which(exotics[,"action"] =="exclude"),1]
+
+occur.file="/home/jc246980/Species_data/Reach_data/Fish_reach_master.Rdata" #give the full file path of your species data
+occur=load(occur.file)
+occur=get(occur) #rename species occurrence data to 'occur'
+occur$count=rowSums(occur[,2:ncol(occur)]) #count all presence records for each SegmentNo
+occur=occur[which(occur$count>0),] #remove SegmentNos (rows) with no occurrence records for any species
+occur=occur[,-grep('count',colnames(occur))]  #remove the 'count' column
+occur=as.data.frame(t(occur))
+occur$count =rowSums(occur[,1:ncol(occur)]) #count all presence records for each SegmentNo
+occur=occur[which(occur$count>49),] #remove species that are present in less than 50 segments
+occur=as.data.frame(t(occur))
+temp=occur
+temp <- temp[, !(colnames(temp) %in% exotics)]
+occur=temp
+save(occur,file=paste(out.dir,"Fish_reach_master_50.Rdata",sep=''))

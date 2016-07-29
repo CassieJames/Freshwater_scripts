@@ -3,9 +3,10 @@
 ################################################################################
 
 sdm.dir = '/home/jc246980/SDM/'; setwd(sdm.dir)
-taxa=c('fish','crayfish','turtles','frog'); tax=taxa[3] #change as appropriate
-wd=paste(sdm.dir,'models_',tax,"/",sep="") ; setwd(work.dir)
+taxa=c('Fish','Crayfish','Turtles','Frogs'); tax=taxa[3] #change as appropriate
+wd=paste(sdm.dir,'models_50_',tax,"/",sep="") ; setwd(work.dir)
 species = list.files() #get a list of all the species
+
 out.dir=paste('/home/jc246980/SDM/Realized/',tax,'/Clip4North/',sep='')
 sh.dir='/home/jc246980/SDM/Realized/temp/'; setwd(sh.dir)
 script.file = '/home/jc246980/Freshwater_scripts/Final/Species_distribution_modelling/05.script2run_turtles.r'

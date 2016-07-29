@@ -8,7 +8,7 @@ W###############################################################################
 #### create pos file at 1 km resolution and map accumulated flow to pos
 
 RiverBasin.asc = read.asc("/home/jc246980/Janet_Stein_data/ncb_level1.asc") # load river basin asc
-raster=read.asc.gz('/home/jc148322/NARPfreshwater/SDM/SegmentNo_1km.asc.gz') # load 1 km raster and create pos file
+raster = read.asc.gz(paste('/home/jc148322/NARPfreshwater/SDM/SegmentNo_1km.asc.gz',sep='')) #read in the base asc file
 pos = as.data.frame(which(is.finite(raster),arr.ind=T))
 pos$lat = getXYcoords(raster)$y[pos$col]
 pos$lon = getXYcoords(raster)$x[pos$row] #append the lat lon
@@ -20,7 +20,7 @@ current=read.csv("/home/jc246980/Hydrology.trials/Accumulated_reach/Output_futur
 current$annualsum=rowSums(current[, 2:13])
 pos=merge(pos,current,by='SegmentNo',all.x=TRUE)
 
-out.dir= "/home/jc246980/Final report/Summary_data/"
+out.dir= "/home/jc246980/Obsolete/Final report/Summary_data/"
 
 table_delta = matrix(NA,nrow=length(RiverBasins),ncol=4); #define the output matrix
 colnames(table_delta) = c('quant_10', 'quant_50', 'quant_90', 'maximum') 

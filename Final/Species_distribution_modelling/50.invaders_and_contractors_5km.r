@@ -12,7 +12,7 @@
 #### Determine contractors and invaders
 	
 	taxa = c("fish", "crayfish","frog","turtles")
-	tax = taxa[4]	
+	tax = taxa[1]	
 	ESs=c('RCP3PD', 'RCP45', 'RCP6','RCP85'); es=ESs[4]	
 	real.dir=paste("/home/jc246980/SDM/Realized/",tax,"/Clip4North/",sep="") 
 	sdm.dir = '/home/jc246980/SDM/'		
@@ -56,7 +56,7 @@ for (spp in species) { print(spp)
 ### Determine quantiles for the future 
 
 YEARs=seq(2015,2085,10)
-data.dir=paste('/home/jc246980/SDM/Invaders_contractors/',tax,'/Quantiles/',sep=''); setwd(out.dir)
+data.dir=paste('/home/jc246980/SDM/Invaders_contractors/',tax,'/Data/',sep=''); setwd(data.dir)
 load(paste(data.dir,es,'.Invaders.mat.Rdata',sep='')) 
 load(paste(data.dir,es,'.Contractors.mat.Rdata',sep='')) 
 

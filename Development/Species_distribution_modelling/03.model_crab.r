@@ -1,8 +1,8 @@
 ###written by Lauren Hodgson, modified from Jeremy VanDerWal's SDM scripts. Jan 2013
 ########################################################################################################
 ### Define inputs, working directories and necessary libraries
-taxa=c('fish','crayfish','turtles','frog')
-taxon=taxa[2] #change as appropriate
+taxa=c('crab')
+taxon=taxa[1] #change as appropriate
 taxname=sub(substr(taxon,1,1),toupper(substr(taxon,1,1)),taxon)
 
 
@@ -27,15 +27,15 @@ for (tt in paste('bioclim_',sprintf('%02i',c(12:14,16:19)),sep="")) { cat(tt,'\n
 save(current,file=paste(basedir,'current_1990.Rdata',sep='')) #write out the full current dataset
 write.csv(current,paste(projdir,'current_1990.csv',sep=''), row.names=FALSE) #write out the full current dataset
 
-current = current[,c('SegmentNo','lat','lon',paste('bioclim_',sprintf('%02i',c(1,4,5,6,12,15,16,17)),sep=''),'max.clust.length','clust.severity','Flow_accum_annual', 'Segslope', 'Catslope', 'd2outlet')] #keep only variables of interest
+current = current[,c('SegmentNo','lat','lon',paste('bioclim_',sprintf('%02i',c(1,4,5,6,12,15,16,17)),sep=''),'Flow_accum_annual')] #keep only variables of interest
 load(occur.file); #load in the occur
 species=colnames(occur)[-1] #get a list of the species
 
-tt = unique(round(c(which(rowSums(occur[,-1])>=1),runif(20000,1,nrow(current))))) #get segment numbers where a species has been observed and append some 15k random
+tt = unique(round(c(which((occur[,2])>=1),runif(20000,1,nrow(current))))) #get segment numbers where a species has been observed and append some 15k random
 bkgd = current[tt,]; write.csv(bkgd,paste('../bkgd_',taxon,'.csv',sep=''),row.names=FALSE) #write out the background points
 
 for (spp in species) {cat(spp,'\n')
-if (length(which(occur[,spp]>0)) >= 5) { #model species where count is greater or equal to 5
+if (length(which(occur[,spp]>0)) >= 5) { #model species where count is greater than 5
 toccur = current[which(current$SegmentNo %in% occur[which(occur[,spp]>0),'SegmentNo']),] #get segment number for the species
 toccur$SegmentNo=spp #reset the values the species column of the occur file
 spp.dir = paste(wd,spp,'/',sep='') #define the species directory

@@ -3,7 +3,7 @@
 ### C. James 												27th February 2014
 
 
-taxa=c('fish','crayfish','turtles','frog'); tax=taxa[4] #change as appropriate
+taxa=c('fish','crayfish','turtles','frog'); tax=taxa[1] #change as appropriate
 image.dir=paste('/home/jc246980/SDM/Realized/Images/',tax,'/Clip4North/',sep='')
 wd=paste('/home/jc246980/SDM/Realized/',tax,'/Clip4North/',sep=''); setwd(wd)
 files=list.files(wd)

@@ -13,7 +13,7 @@ pos$UID = 1:286244 																# append unique identifier
 
 ##########import river basin asc and attribute river basin number to position table
 
-river.basin.dir='/home/jc246980/Hydrology.trials/Flow_accumulation/';  setwd(river.basin.dir)
+river.basin.dir='/home/jc246980/Obsolete/Hydrology.trials/Accumulated_reach/Flow_accumulation_background_stuff/';  setwd(river.basin.dir)
 tasc = read.asc("bname.asc")
 pos$riverbasin  = extract.data(cbind(pos$lon,pos$lat), tasc)  
 RB=unique(pos$riverbasin)
